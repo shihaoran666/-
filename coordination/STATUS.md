@@ -1,6 +1,6 @@
 # 协同状态
 
-更新：2026-11-15。当前 GitHub 共享仓库为 `shihaoran666/-`，游戏工程位于 `雾灯群岛/`。此页由集成者维护；其他 agent 在 `coordination/updates/` 交接，以减少并发冲突。
+更新：2026-11-16。当前 GitHub 共享仓库为 `shihaoran666/-`，游戏工程位于 `雾灯群岛/`。此页由集成者维护；其他 agent 在 `coordination/updates/` 交接，以减少并发冲突。原 `E:\Codex\游戏制作\雾灯群岛` 保留为历史副本；后续变更以本仓库为准。
 
 ## 当前基线
 
@@ -17,6 +17,8 @@
 | DeepSeek | 只读检查第二条任务与现有引导，提出可执行的线索步骤和新旧存档验收用例；写独立交接文件 | 不修改 Unity 主工程，不运行构建 |
 | WorkBuddy 或其他文案 agent | 核对中英本地化和 Steam 草稿，输出“商店承诺→0.2.2 实证→删改”清单 | 不修改 Unity 脚本，不发布商店页 |
 | 视听工具/制作人 | 交付地标辨识草图、单件低模原型、关键事件短音候选及来源/授权记录 | 独立目录，集成前实机审查 |
+
+DeepSeek 已通过 Agent HUD 收到线索任务并开始处理，使用独立工作目录 `F:\github\agent-deepseek-chart-review` 和分支 `agent/deepseek/chart-clue-review`。WorkBuddy 尚未连通 Agent HUD 客户端钩子，文案任务已列在此页，但尚未直接送达。
 
 ## 交接规则
 
