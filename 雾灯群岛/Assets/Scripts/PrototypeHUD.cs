@@ -101,9 +101,11 @@ namespace FoglightIsles
                 _measure = measure;
             }
             if (measure.CalcSize(new GUIContent(controls)).x > controlsWidth)
-                controls = onBoat
-                    ? "W/S 加减速 · A/D 转向 · E 靠岸 · J 日志 · M 海图"
-                    : "WASD 移动 · Shift 跑 · E 互动 · J 日志 · M 海图";
+                controls = gamepadPrompts
+                    ? (onBoat ? "左摇杆航行 · A 靠岸 · Y 日志 · View 海图"
+                              : "左摇杆移动 · 右摇杆观察 · A 互动 · Y 日志 · View 海图")
+                    : (onBoat ? "W/S 加减速 · A/D 转向 · E 靠岸 · J 日志 · M 海图"
+                              : "WASD 移动 · Shift 跑 · E 互动 · J 日志 · M 海图");
             GUI.Label(new Rect(28, bounds.height - 45, controlsWidth, 30), controls, _body);
             }
             finally

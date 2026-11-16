@@ -606,21 +606,23 @@ namespace FoglightIsles
             interactable.Prompt = "接取灯塔委托";
             interactable.OnInteracted = _ => _quest.Accept();
 
-            var manager = Primitive(PrimitiveType.Capsule, "港口管理员艾琳", new Vector3(-7.4f, 1f, 8.8f), new Vector3(.7f, 1f, .7f), CreateMaterial(new Color(.18f, .45f, .55f)));
+            var manager = Primitive(PrimitiveType.Capsule, "港口管理员艾琳", new Vector3(-7.4f, 1f, 8.8f), new Vector3(.7f, 1f, .7f), CreateMaterial(new Color(.12f, .23f, .29f)));
             _harbourManager = manager.transform;
-            var managerBadge = Primitive(PrimitiveType.Sphere, "艾琳的灯塔徽记", manager.transform.position + new Vector3(0f, .42f, -.38f), Vector3.one * .3f, _warmLight);
-            managerBadge.transform.SetParent(manager.transform, true);
-            Destroy(managerBadge.GetComponent<Collider>());
+            AttachNpcDecoration(manager, PrimitiveType.Sphere, "艾琳的灯塔徽记", new Vector3(0f, .42f, -.38f), Vector3.one * .3f, _warmLight);
+            AttachNpcDecoration(manager, PrimitiveType.Cylinder, "艾琳的帽檐", new Vector3(0f, 1.03f, 0f), new Vector3(.76f, .055f, .64f), _stone);
+            AttachNpcDecoration(manager, PrimitiveType.Cylinder, "艾琳的高帽", new Vector3(0f, 1.22f, 0f), new Vector3(.42f, .19f, .42f), _wood);
+            AttachNpcDecoration(manager, PrimitiveType.Cube, "艾琳的航海卷册", new Vector3(-.48f, .05f, -.12f), new Vector3(.17f, .48f, .21f), CreateMaterial(new Color(.72f, .7f, .56f)));
             var managerInteraction = manager.AddComponent<Interactable>();
             managerInteraction.Title = "艾琳，港口管理员";
             manager.AddComponent<NpcNameplate>().Configure("艾琳 · 港口管理员");
             managerInteraction.OnInteracted = _ => TalkToEileen();
 
-            var shipwright = Primitive(PrimitiveType.Capsule, "船匠乔恩", new Vector3(2.4f, 1f, 10.2f), new Vector3(.7f, 1f, .7f), CreateMaterial(new Color(.88f, .59f, .2f)));
+            var shipwright = Primitive(PrimitiveType.Capsule, "船匠乔恩", new Vector3(2.4f, 1f, 10.2f), new Vector3(.7f, 1f, .7f), CreateMaterial(new Color(.61f, .67f, .63f)));
             _shipwright = shipwright.transform;
-            var shipwrightTool = Primitive(PrimitiveType.Cylinder, "乔恩的修船工具", shipwright.transform.position + new Vector3(.55f, .05f, 0f), new Vector3(.08f, .72f, .08f), _stone);
-            shipwrightTool.transform.SetParent(shipwright.transform, true);
-            Destroy(shipwrightTool.GetComponent<Collider>());
+            AttachNpcDecoration(shipwright, PrimitiveType.Cylinder, "乔恩的修船工具", new Vector3(.55f, .05f, 0f), new Vector3(.08f, .72f, .08f), _stone);
+            AttachNpcDecoration(shipwright, PrimitiveType.Cube, "乔恩的锤头", new Vector3(.55f, .4f, 0f), new Vector3(.42f, .16f, .18f), _stone);
+            AttachNpcDecoration(shipwright, PrimitiveType.Cube, "乔恩的扁帽", new Vector3(0f, 1.02f, -.09f), new Vector3(.7f, .12f, .65f), _wood);
+            AttachNpcDecoration(shipwright, PrimitiveType.Sphere, "乔恩的腰灯", new Vector3(-.42f, -.18f, -.24f), Vector3.one * .22f, _warmLight);
             var shipwrightInteraction = shipwright.AddComponent<Interactable>();
             shipwrightInteraction.Title = "乔恩，船匠";
             shipwright.AddComponent<NpcNameplate>().Configure("乔恩 · 船匠");
@@ -962,6 +964,15 @@ namespace FoglightIsles
                 else
                     _guidance.SetTarget(null, string.Empty);
             }
+        }
+
+        private static void AttachNpcDecoration(GameObject npc, PrimitiveType type, string name, Vector3 localPosition, Vector3 scale, Material material)
+        {
+            var part = Primitive(type, name, npc.transform.position + localPosition, scale, material);
+            part.transform.SetParent(npc.transform, true);
+            var collider = part.GetComponent<Collider>();
+            collider.enabled = false;
+            UnityEngine.Object.Destroy(collider);
         }
 
         private static GameObject Primitive(PrimitiveType type, string name, Vector3 position, Vector3 scale, Material material)

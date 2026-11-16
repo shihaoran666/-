@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
@@ -31,6 +32,14 @@ namespace FoglightIsles
         private IEnumerator VerifyVoyage()
         {
             yield return null;
+            bool captureHud = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-gamepad-hud") >= 0;
+            if (captureHud)
+            {
+                Screen.SetResolution(640, 360, FullScreenMode.Windowed);
+                yield return new WaitUntil(() => Screen.width == 640 && Screen.height == 360);
+                yield return null;
+                yield return null;
+            }
             PlayerController player = FindFirstObjectByType<PlayerController>();
             BoatController boat = FindFirstObjectByType<BoatController>();
             QuestState quest = FindFirstObjectByType<QuestState>();
@@ -41,7 +50,7 @@ namespace FoglightIsles
             Gamepad pad = InputSystem.AddDevice<Gamepad>();
             yield return PressA(pad);
             if (StartScreen.IsOpen || Time.timeScale == 0f)
-            { Fail("gamepad A did not open exploration"); yield break; }
+            { Fail($"gamepad A did not open exploration (title={StartScreen.IsOpen}, timeScale={Time.timeScale})"); yield break; }
 
             Vector3 spawn = player.transform.position;
             InputSystem.QueueStateEvent(pad, new GamepadState { leftStick = new Vector2(.1f, .1f) });
@@ -62,6 +71,11 @@ namespace FoglightIsles
             yield return null;
             if (!foundBoard || Vector3.Distance(spawn, player.transform.position) < 2f)
             { Fail("left stick did not walk to the notice board"); yield break; }
+            if (captureHud)
+            {
+                if (!InputPromptMode.UsingGamepad) { Fail("walking HUD did not enter gamepad prompt mode"); yield break; }
+                yield return CaptureHud("review-gamepad-hud-walking.png");
+            }
             yield return PressA(pad);
             if (quest.Stage != PrismQuestStage.SearchTideflats)
             { Fail("gamepad A did not accept the first quest"); yield break; }
@@ -77,6 +91,11 @@ namespace FoglightIsles
             yield return PressA(pad);
             if (!player.IsOnBoat || !boat.HasCaptain)
             { Fail("gamepad A did not board the boat"); yield break; }
+            if (captureHud)
+            {
+                if (!InputPromptMode.UsingGamepad) { Fail("boat HUD did not remain in gamepad prompt mode"); yield break; }
+                yield return CaptureHud("review-gamepad-hud-boat.png");
+            }
 
             float startZ = boat.transform.position.z;
             float startYaw = boat.transform.eulerAngles.y;
@@ -207,6 +226,13 @@ namespace FoglightIsles
             yield return null;
             InputSystem.QueueStateEvent(pad, new GamepadState());
             yield return null;
+        }
+
+        private static IEnumerator CaptureHud(string fileName)
+        {
+            yield return new WaitForEndOfFrame();
+            ScreenCapture.CaptureScreenshot(Path.Combine(Application.dataPath, "../" + fileName));
+            yield return new WaitForSecondsRealtime(1f);
         }
 
         private void Fail(string reason)
