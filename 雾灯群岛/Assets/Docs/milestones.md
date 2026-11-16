@@ -37,7 +37,7 @@
 
 ## 最近验证记录
 
-- 2026-11-16：DeepSeek 在隔离分支实现“失落航图”遗迹残碑线索：未读不能取图，读后罗盘、HUD、日志切换目标；线索使用独立存档键，任务阶段整数保持兼容。Codex 合入并修正全任务回归的取图步骤。Unity 6.0 Windows 发布候选版构建、`-verify-chart-old-save`、`-verify-new-save`、`-verify-keyboard-first-quest`、`-verify-keyboard-chart-quest`、独立进程 `-verify-keyboard-chart-resume`、`-verify-quest-loop` 均 PASS。`FoglightIslesDemo-Windows-0.2.3.zip` 打包 PASS（163 文件，33.1 MB，构建编号 `20261116011424-14EEE5716A67`），包内程序集哈希与候选版一致，独立解压运行旧档验证 PASS。实体手柄往返、残碑可辨认性及陌生玩家独立找路仍待真人验收。
+- 2026-11-16：DeepSeek 在隔离分支实现“失落航图”遗迹残碑线索：未读不能取图，读后罗盘、HUD、日志切换目标；线索使用独立存档键，任务阶段整数保持兼容。Codex 合入并修正全任务回归的取图步骤及登岛后的罗盘目标切换，键鼠流程增加两处目标断言。Unity 6.0 Windows 发布候选版构建、`-verify-chart-old-save`、`-verify-new-save`、`-verify-keyboard-first-quest`、`-verify-keyboard-chart-quest`、独立进程 `-verify-keyboard-chart-resume`、`-verify-quest-loop` 均 PASS。`FoglightIslesDemo-Windows-0.2.3.zip` 打包 PASS（163 文件，33.1 MB，构建编号 `20261116011838-D18E456C5884`），包内程序集哈希与候选版一致，独立解压运行旧档验证 PASS。实体手柄往返、残碑可辨认性及陌生玩家独立找路仍待真人验收。
 
 - 2026-11-15：探索支线的四件发现物集齐后返港找艾琳，会永久解锁导航台旁可阅读的「旧航线陈列」；集齐提示已明确指向艾琳。Unity 6.0 Windows 发布候选版构建 PASS；`-verify-discoveries`、独立进程 `-verify-discoveries-resume`（包含陈列状态）、无窗口 `-verify-quest-loop` 均 PASS。1920×1080 图形抓帧确认陈列出现在港口导航区。`FoglightIslesDemo-Windows-0.2.2.zip` 打包 PASS（163 文件，33.1 MB，构建编号 `20261115132634-E3B97ADA4755`）；独立解压运行发现物回归 PASS，包内游戏程序集与候选版 SHA-256 一致。用户此前已用实体键鼠完成去程靠岸下船；实体手柄往返、陌生玩家的路线理解与支线回报感受仍待真人验收。
 

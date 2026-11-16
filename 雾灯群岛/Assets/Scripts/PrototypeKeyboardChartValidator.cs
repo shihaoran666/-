@@ -94,6 +94,10 @@ namespace FoglightIsles
                 Vector3.Distance(player.transform.position, tideflats.DisembarkPosition) > .05f)
             { Fail("E did not land at Tideflats"); yield break; }
 
+            GuidanceMarker guidance = FindFirstObjectByType<GuidanceMarker>();
+            if (guidance?.Target?.name != "遗迹残碑")
+            { Fail("the compass did not point to the ruin inscription after landing"); yield break; }
+
             yield return Walk(player, keyboard, new Vector2(3.5f, -72.2f), null, "island sign");
             if (_failed) yield break;
             yield return Walk(player, keyboard, new Vector2(5f, -78f), null, "ruin entrance");
@@ -114,6 +118,8 @@ namespace FoglightIsles
             yield return PressE(keyboard);
             if (!ProgressStore.HasReadSurveyClue)
             { Fail("E did not read the ruin inscription"); yield break; }
+            if (guidance.Target?.name != "失落航图")
+            { Fail("the compass did not switch to the chart after reading the inscription"); yield break; }
 
             yield return Walk(player, keyboard, new Vector2(8.3f, -82.3f), "失落航图", "lost chart");
             if (_failed) yield break;

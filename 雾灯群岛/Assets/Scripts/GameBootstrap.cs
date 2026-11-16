@@ -893,8 +893,13 @@ namespace FoglightIsles
                 else if (_surveyQuest.Stage == SurveyChartStage.Locked)
                     _guidance.SetTarget(_harbourManager, "向艾琳询问失落航图");
                 else if (_surveyQuest.Stage == SurveyChartStage.SearchRuin)
-                    _guidance.SetTarget(_player.IsOnBoat ? _tideflatsDock.transform : atTideflats ? _surveyChart.transform : _boat.transform,
-                        _player.IsOnBoat ? "驶向潮汐浅滩码头" : atTideflats ? "寻找失落航图" : "登上晨鹱号");
+                {
+                    Transform islandTarget = _surveyQuest.ClueRead || _surveyClueTablet == null
+                        ? _surveyChart.transform : _surveyClueTablet;
+                    _guidance.SetTarget(_player.IsOnBoat ? _tideflatsDock.transform : atTideflats ? islandTarget : _boat.transform,
+                        _player.IsOnBoat ? "驶向潮汐浅滩码头" : atTideflats ?
+                            _surveyQuest.ClueRead ? "寻找失落航图" : "辨认遗迹残碑" : "登上晨鹱号");
+                }
                 else if (_surveyQuest.Stage == SurveyChartStage.ReturnToHarbour)
                     _guidance.SetTarget(_player.IsOnBoat ? _morningBayDock.transform : atTideflats ? _boat.transform : _harbourManager,
                         _player.IsOnBoat ? "驶向晨湾港码头" : atTideflats ? "登上晨鹱号返航" : "交付航图给艾琳");

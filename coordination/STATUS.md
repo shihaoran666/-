@@ -4,7 +4,7 @@
 
 ## 当前基线
 
-- Windows Demo 0.2.3；构建编号 `20261116011424-14EEE5716A67`。试玩 ZIP 不入库，保存在集成者本机 `雾灯群岛/Builds/Distribution/`。
+- Windows Demo 0.2.3；构建编号 `20261116011838-D18E456C5884`。试玩 ZIP 不入库，保存在集成者本机 `雾灯群岛/Builds/Distribution/`。
 - 用户已用实体键鼠完成晨湾港到潮汐浅滩的去程、靠岸和下船；历史试玩没有记录准确构建编号与用时。
 - 自动虚拟手柄往返和探索/任务续档回归通过；实体手柄往返、陌生玩家独立找路仍待真人验收。
 
@@ -18,7 +18,7 @@
 | WorkBuddy | 在 `agent/workbuddy/presentation` 分支按 `coordination/WORKBUDDY_TASK.md` 实现四种程序化交互确认音 | 独立组件和交接文件；尚未通过 Agent HUD 送达，待客户端钩子连通或用户手动转发 |
 | 视听工具/制作人 | 交付地标辨识草图、单件低模原型、关键事件短音候选及来源/授权记录 | 独立目录，集成前实机审查 |
 
-DeepSeek 已通过 Agent HUD 交付失落航图方案及实现，见 [`deepseek-2026-11-16-chart-clue.md`](updates/deepseek-2026-11-16-chart-clue.md) 和 [`deepseek-2026-11-16-chart-clue-impl.md`](updates/deepseek-2026-11-16-chart-clue-impl.md)。Codex 合入后补全任务闭环验证，并从共享仓库构建 0.2.3：Unity 构建、旧档兼容、新档、键鼠首任务、航图键鼠流程及跨进程续档、三任务闭环均 PASS；ZIP 独立解压后旧档验证 PASS，包内程序集哈希一致。QA agent 的 [`qa-2026-11-16-playtest-gate.md`](updates/qa-2026-11-16-playtest-gate.md) 与文案 agent 的 [`production-2026-11-16-store-fact-check.md`](updates/production-2026-11-16-store-fact-check.md) 仍是待真人和商店实证核对的交接。WorkBuddy 分支已推送 GitHub，但 Agent HUD 仍显示客户端钩子未回报，任务尚未直接送达。
+DeepSeek 已通过 Agent HUD 交付失落航图方案及实现，见 [`deepseek-2026-11-16-chart-clue.md`](updates/deepseek-2026-11-16-chart-clue.md) 和 [`deepseek-2026-11-16-chart-clue-impl.md`](updates/deepseek-2026-11-16-chart-clue-impl.md)。Codex 合入后补全任务闭环验证，并修正登岛后的罗盘持续指向残碑、读后改指航图：Unity 构建、旧档兼容、新档、键鼠首任务、航图键鼠流程及跨进程续档、三任务闭环均 PASS；ZIP 独立解压后旧档验证 PASS，包内程序集哈希一致。QA agent 的 [`qa-2026-11-16-playtest-gate.md`](updates/qa-2026-11-16-playtest-gate.md) 与文案 agent 的 [`production-2026-11-16-store-fact-check.md`](updates/production-2026-11-16-store-fact-check.md) 仍是待真人和商店实证核对的交接。WorkBuddy 分支已推送 GitHub，但 Agent HUD 仍显示客户端钩子未回报，任务尚未直接送达。
 
 ## 交接规则
 
