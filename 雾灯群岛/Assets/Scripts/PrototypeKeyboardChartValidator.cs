@@ -98,12 +98,29 @@ namespace FoglightIsles
             if (_failed) yield break;
             yield return Walk(player, keyboard, new Vector2(5f, -78f), null, "ruin entrance");
             if (_failed) yield break;
+            // The chart is gated on the ruin inscription: pressing E before reading it must
+            // change nothing and must not remove the object from the table.
+            yield return Walk(player, keyboard, new Vector2(8.3f, -82.3f), "失落航图", "lost chart");
+            if (_failed) yield break;
+            if (ProgressStore.HasReadSurveyClue)
+            { Fail("ruin clue read before the chart was reached; the gate cannot be exercised"); yield break; }
+            yield return PressE(keyboard);
+            if (chart.Stage != SurveyChartStage.SearchRuin || GameObject.Find("失落航图") == null)
+            { Fail("E collected the lost chart before the ruin inscription was read"); yield break; }
+            if (capture) yield return Capture("review-keyboard-chart-blocked.png");
+
+            yield return Walk(player, keyboard, new Vector2(6.6f, -83.6f), "遗迹残碑", "ruin inscription");
+            if (_failed) yield break;
+            yield return PressE(keyboard);
+            if (!ProgressStore.HasReadSurveyClue)
+            { Fail("E did not read the ruin inscription"); yield break; }
+
             yield return Walk(player, keyboard, new Vector2(8.3f, -82.3f), "失落航图", "lost chart");
             if (_failed) yield break;
             if (capture) yield return Capture("review-keyboard-chart-found.png");
             yield return PressE(keyboard);
             if (chart.Stage != SurveyChartStage.ReturnToHarbour || GameObject.Find("失落航图") != null)
-            { Fail("E did not collect the lost chart"); yield break; }
+            { Fail("E did not collect the lost chart after reading the inscription"); yield break; }
 
             yield return Walk(player, keyboard, new Vector2(5f, -78f), null, "ruin return");
             if (_failed) yield break;

@@ -34,6 +34,7 @@ namespace FoglightIsles
         private DockingPoint _morningBayDock;
         private DockingPoint _tideflatsDock;
         private Transform _tideClueTablet;
+        private Transform _surveyClueTablet;
         private Transform _tideBeaconSearchArea;
         private bool _tideClueRead;
         private readonly GameObject[] HarbourBeaconPylons = new GameObject[3];
@@ -98,6 +99,7 @@ namespace FoglightIsles
             gameObject.AddComponent<PrototypeQuestLoopValidator>();
             gameObject.AddComponent<PrototypeDiscoveryValidator>();
             gameObject.AddComponent<PrototypeNewSaveValidator>();
+            gameObject.AddComponent<PrototypeChartOldSaveValidator>();
             gameObject.AddComponent<PrototypePerformanceValidator>();
             gameObject.AddComponent<PrototypeVisualCapture>();
         }
@@ -231,6 +233,7 @@ namespace FoglightIsles
                 _surveyQuest.CollectChart();
                 if (_surveyQuest.Stage == SurveyChartStage.ReturnToHarbour) _surveyChart.SetActive(false);
             };
+            BuildSurveyChartClue();
             Primitive(PrimitiveType.Cylinder, "风暴透镜石座", new Vector3(-4.6f, .3f, -91.5f), new Vector3(.8f, .3f, .8f), _stone);
             _stormLens = Primitive(PrimitiveType.Sphere, "风暴透镜", new Vector3(-4.6f, .85f, -91.5f), Vector3.one * .7f,
                 CreateMaterial(new Color(.35f, .8f, .95f), true));
@@ -357,6 +360,32 @@ namespace FoglightIsles
                     "石碑上的灯纹从西向东排列：西侧信标 → 中央信标 → 东侧信标。");
             };
             _tideClueTablet = tablet.transform;
+        }
+
+        // Second quest's gating step: the chart on the table cannot be taken until this
+        // inscription has been read. Mirrors BuildTideClue so both clues persist the same way.
+        private void BuildSurveyChartClue()
+        {
+            var tablet = Primitive(PrimitiveType.Cube, "遗迹残碑", new Vector3(6.6f, .9f, -84.6f),
+                new Vector3(1.1f, 1.4f, .24f), CreateMaterial(new Color(.16f, .2f, .26f)));
+            var carving = CreateMaterial(new Color(.72f, .63f, .42f), true);
+            var crown = Primitive(PrimitiveType.Cube, "残碑发光冠饰", tablet.transform.position + Vector3.up * .74f,
+                new Vector3(1.22f, .1f, .3f), carving);
+            crown.transform.SetParent(tablet.transform, true);
+            Destroy(crown.GetComponent<Collider>());
+            for (int index = 0; index < 2; index++)
+            {
+                var mark = Primitive(PrimitiveType.Cube, "残碑航纹 " + (index + 1),
+                    tablet.transform.position + new Vector3((index - .5f) * .38f, .16f, .13f),
+                    new Vector3(.3f, .05f, .03f), carving);
+                mark.transform.SetParent(tablet.transform, true);
+                Destroy(mark.GetComponent<Collider>());
+            }
+            var interaction = tablet.AddComponent<Interactable>();
+            interaction.Title = "遗迹残碑";
+            interaction.Prompt = "辨认航图残记";
+            interaction.OnInteracted = _ => _surveyQuest.ReadRuinClue();
+            _surveyClueTablet = tablet.transform;
         }
 
         private void BuildBoat()
@@ -743,7 +772,14 @@ namespace FoglightIsles
             if (stage == PrismQuestStage.Complete && _surveyQuest.Stage != SurveyChartStage.Locked && _surveyQuest.Stage != SurveyChartStage.Complete)
             {
                 if (_surveyQuest.Stage == SurveyChartStage.SearchRuin)
-                    _guidance.SetTarget(_surveyChart.transform, "失落航图");
+                {
+                    // Until the inscription is read the guidance points at it, not the chart,
+                    // so the compass never sends the player to an object they cannot take.
+                    if (_surveyQuest.ClueRead || _surveyClueTablet == null)
+                        _guidance.SetTarget(_surveyChart.transform, "失落航图");
+                    else
+                        _guidance.SetTarget(_surveyClueTablet, "遗迹残碑");
+                }
                 else
                     _guidance.SetTarget(_harbourManager, "返回晨湾港");
                 return;

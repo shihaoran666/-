@@ -12,6 +12,7 @@ namespace FoglightIsles
         private const string SurveyChartStageKey = "foglightisles.quest.survey-chart.v1";
         private const string StormSignalStageKey = "foglightisles.quest.storm-signal.v1";
         private const string TideClueReadKey = "foglightisles.tide-clue-read.v1";
+        internal const string SurveyClueReadKey = "foglightisles.quest.survey-chart.clue.v1";
         private const string HarbourProsperityKey = "foglightisles.harbour.prosperity.v1";
         private const string HarbourRouteArchiveKey = "foglightisles.harbour.route-archive.v1";
         private static readonly bool IsInteractiveReview = Array.IndexOf(Environment.GetCommandLineArgs(), "-interactive-review") >= 0;
@@ -31,6 +32,7 @@ namespace FoglightIsles
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-first-quest-resume") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-chart-quest") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-chart-resume") >= 0 ||
+                                                       Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-chart-old-save") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-storm-quest") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-storm-resume") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-free-roam") >= 0 ||
@@ -113,6 +115,19 @@ namespace FoglightIsles
             PlayerPrefs.Save();
         }
 
+        /// <summary>
+        /// The lost-chart quest's ruin inscription. Deliberately a separate key: the
+        /// SurveyChartStage integers are a saved-game contract, so a new step must not
+        /// be inserted into that enum. An old save without this key reads as "not read yet".
+        /// </summary>
+        public static bool HasReadSurveyClue => PlayerPrefs.GetInt(StorageKey(SurveyClueReadKey), 0) == 1;
+
+        public static void SaveSurveyClueRead()
+        {
+            PlayerPrefs.SetInt(StorageKey(SurveyClueReadKey), 1);
+            PlayerPrefs.Save();
+        }
+
         /// <summary>How many commissions the harbour has actually been changed by (0-3).</summary>
         public static int HarbourProsperity => Mathf.Clamp(PlayerPrefs.GetInt(StorageKey(HarbourProsperityKey), 0), 0, 3);
 
@@ -144,6 +159,7 @@ namespace FoglightIsles
             PlayerPrefs.DeleteKey(StorageKey(SurveyChartStageKey));
             PlayerPrefs.DeleteKey(StorageKey(StormSignalStageKey));
             PlayerPrefs.DeleteKey(StorageKey(TideClueReadKey));
+            PlayerPrefs.DeleteKey(StorageKey(SurveyClueReadKey));
             PlayerPrefs.DeleteKey(StorageKey(HarbourProsperityKey));
             PlayerPrefs.DeleteKey(StorageKey(HarbourRouteArchiveKey));
             PlayerPrefs.Save();

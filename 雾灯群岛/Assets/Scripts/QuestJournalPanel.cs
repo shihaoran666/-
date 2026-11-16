@@ -168,7 +168,8 @@ namespace FoglightIsles
 
         private string ChartDetail() => _chart?.Stage switch
         {
-            SurveyChartStage.SearchRuin => "到潮汐浅滩遗迹入口石台找回失落航图。",
+            SurveyChartStage.SearchRuin when _chart != null && !_chart.ClueRead => "先辨认遗迹残碑上的旧航线，再取走石台上的航图。",
+            SurveyChartStage.SearchRuin => "到潮汐浅滩遗迹入口石台取回失落航图。",
             SurveyChartStage.ReturnToHarbour => "将航图带回晨湾港交给艾琳。",
             SurveyChartStage.Complete => "航图已交付，新的航线轮廓显现。",
             _ => "修复港口灯塔后，向艾琳询问旧航图。"
