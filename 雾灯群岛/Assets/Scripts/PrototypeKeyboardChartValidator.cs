@@ -115,6 +115,7 @@ namespace FoglightIsles
 
             yield return Walk(player, keyboard, new Vector2(6.6f, -83.6f), "遗迹残碑", "ruin inscription");
             if (_failed) yield break;
+            if (capture) yield return Capture("review-keyboard-chart-clue.png");
             yield return PressE(keyboard);
             if (!ProgressStore.HasReadSurveyClue)
             { Fail("E did not read the ruin inscription"); yield break; }
