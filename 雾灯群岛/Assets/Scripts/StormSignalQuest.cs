@@ -12,7 +12,9 @@ namespace FoglightIsles
         private SurveyChartQuest _surveyQuest;
         public StormSignalStage Stage { get; private set; }
         public int VaneDirection => ProgressStore.LoadStormVaneDirection();
-        public bool VaneAligned => VaneDirection == 0;
+        // A pre-vane save already past collection remains complete even without this new key.
+        public bool VaneAligned => Stage is StormSignalStage.ReturnToShipwright or StormSignalStage.Complete || VaneDirection == 0;
+        public int DisplayVaneDirection => VaneAligned ? 0 : VaneDirection;
         public event Action<StormSignalStage> Changed;
 
         public string Objective => Stage switch
@@ -75,6 +77,11 @@ namespace FoglightIsles
 
         public void RotateVane()
         {
+            if (Stage == StormSignalStage.Locked)
+            {
+                PrototypeHUD.SetMessage("先向乔恩接取风暴透镜委托，再校准风向标。 ");
+                return;
+            }
             if (Stage != StormSignalStage.SearchTideflats || VaneAligned)
             {
                 PrototypeHUD.SetMessage("风向标已经指向晨湾港，无须再转动。 ");

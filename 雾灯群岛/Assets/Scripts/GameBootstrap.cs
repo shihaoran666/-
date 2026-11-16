@@ -265,9 +265,9 @@ namespace FoglightIsles
             interaction.OnInteracted = _ =>
             {
                 _stormSignalQuest.RotateVane();
-                vane.transform.rotation = Quaternion.Euler(0f, _stormSignalQuest.VaneDirection * 90f, 0f);
+                vane.transform.rotation = Quaternion.Euler(0f, _stormSignalQuest.DisplayVaneDirection * 90f, 0f);
             };
-            vane.transform.rotation = Quaternion.Euler(0f, _stormSignalQuest.VaneDirection * 90f, 0f);
+            vane.transform.rotation = Quaternion.Euler(0f, _stormSignalQuest.DisplayVaneDirection * 90f, 0f);
             _stormVane = vane.transform;
         }
 

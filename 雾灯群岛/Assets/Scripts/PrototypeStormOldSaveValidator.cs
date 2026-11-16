@@ -17,10 +17,28 @@ namespace FoglightIsles
         {
             yield return null;
             string key = ProgressStore.StorageKey(ProgressStore.StormVaneDirectionKey);
+            SurveyChartQuest chart = FindFirstObjectByType<SurveyChartQuest>();
+            if (chart == null)
+            {
+                Fail("survey chart quest is missing");
+                yield break;
+            }
+            var probeObject = new GameObject("Storm Old Save Probe");
+            StormSignalQuest probe = probeObject.AddComponent<StormSignalQuest>();
             PlayerPrefs.DeleteKey(key);
+            ProgressStore.SaveStormSignalStage(StormSignalStage.Locked);
+            probe.Configure(chart);
+            probe.RotateVane();
+            if (!PrototypeHUD.CurrentMessage.Contains("先向乔恩接取") || probe.DisplayVaneDirection != 1)
+            {
+                Fail("unaccepted quest claims the vane is already aligned or rotates it");
+                yield break;
+            }
             ProgressStore.SaveStormSignalStage(StormSignalStage.SearchTideflats);
+            probe.Configure(chart);
             if (ProgressStore.LoadStormSignalStage() != StormSignalStage.SearchTideflats ||
                 ProgressStore.LoadStormVaneDirection() != 1 ||
+                probe.VaneAligned || probe.DisplayVaneDirection != 1 ||
                 (int)StormSignalStage.Locked != 0 || (int)StormSignalStage.SearchTideflats != 1 ||
                 (int)StormSignalStage.ReturnToShipwright != 2 || (int)StormSignalStage.Complete != 3)
             {
@@ -29,13 +47,17 @@ namespace FoglightIsles
             }
 
             ProgressStore.SaveStormSignalStage(StormSignalStage.ReturnToShipwright);
-            if (ProgressStore.LoadStormSignalStage() != StormSignalStage.ReturnToShipwright)
+            probe.Configure(chart);
+            if (ProgressStore.LoadStormSignalStage() != StormSignalStage.ReturnToShipwright ||
+                !probe.VaneAligned || probe.DisplayVaneDirection != 0)
             {
                 Fail("old return stage changed");
                 yield break;
             }
             ProgressStore.SaveStormSignalStage(StormSignalStage.Complete);
-            if (ProgressStore.LoadStormSignalStage() != StormSignalStage.Complete)
+            probe.Configure(chart);
+            if (ProgressStore.LoadStormSignalStage() != StormSignalStage.Complete ||
+                !probe.VaneAligned || probe.DisplayVaneDirection != 0)
             {
                 Fail("old completed stage changed");
                 yield break;
@@ -43,7 +65,8 @@ namespace FoglightIsles
             ProgressStore.SaveStormSignalStage(StormSignalStage.Locked);
             PlayerPrefs.DeleteKey(key);
             PlayerPrefs.Save();
-            Debug.Log("[FoglightIsles Storm Old Save] PASS — pre-vane search, return and complete stages remain loadable.");
+            UnityEngine.Object.Destroy(probeObject);
+            Debug.Log("[FoglightIsles Storm Old Save] PASS — pre-vane search remains solvable, late stages display north, and locked interaction gives the correct hint.");
             Application.Quit(0);
         }
 
