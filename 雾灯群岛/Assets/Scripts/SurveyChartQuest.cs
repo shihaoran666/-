@@ -52,6 +52,11 @@ namespace FoglightIsles
             }
         }
 
+        /// <summary>True once the ruin inscription next to the stone table has been read.</summary>
+        public bool ClueRead => ProgressStore.HasReadSurveyClue;
+
+        public string RuinClueObjective => "辨认遗迹残碑上的旧航线记录。";
+
         public void CollectChart()
         {
             if (Stage != SurveyChartStage.SearchRuin)
@@ -59,8 +64,38 @@ namespace FoglightIsles
                 PrototypeHUD.SetMessage("一张被潮水浸湿的航图。也许艾琳会知道它的用途。 ");
                 return;
             }
+
+            // The chart stays on the table until the ruin inscription has been read.
+            // The stage is intentionally left untouched so the object is not hidden and
+            // the guidance keeps pointing at the inscription.
+            if (!ProgressStore.HasReadSurveyClue)
+            {
+                PrototypeHUD.SetMessage("航图被石台的旧纹压住，先辨认旁边的遗迹残碑。");
+                return;
+            }
+
             SetStage(SurveyChartStage.ReturnToHarbour);
             PrototypeHUD.SetMessage("取得失落航图：" + Objective);
+        }
+
+        /// <summary>Reads the ruin inscription; idempotent so re-reading changes nothing.</summary>
+        public void ReadRuinClue()
+        {
+            if (Stage != SurveyChartStage.SearchRuin)
+            {
+                PrototypeHUD.SetMessage("残碑上的刻痕已经模糊，看不出更多航路。 ");
+                return;
+            }
+
+            if (ProgressStore.HasReadSurveyClue)
+            {
+                PrototypeHUD.SetMessage("残碑的纹样已经记下：航图就在石台上。 ");
+                return;
+            }
+
+            ProgressStore.SaveSurveyClueRead();
+            PrototypeHUD.SetMessage("残碑刻着旧航线的起笔：「航图藏于石台，须先记下此纹，方得取走。」");
+            Changed?.Invoke(Stage);
         }
 
         private void SetStage(SurveyChartStage stage)

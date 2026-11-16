@@ -147,7 +147,9 @@ namespace FoglightIsles
                 else if (_surveyQuest.Stage == SurveyChartStage.Locked)
                     objective = "向港口管理员艾琳询问失落航图。";
                 else if (_surveyQuest.Stage != SurveyChartStage.Complete)
-                    objective = _surveyQuest.Objective;
+                    objective = _surveyQuest.Stage == SurveyChartStage.SearchRuin && !_surveyQuest.ClueRead
+                        ? _surveyQuest.RuinClueObjective
+                        : _surveyQuest.Objective;
                 else if (_stormSignalQuest.Stage == StormSignalStage.Locked)
                     objective = "向船匠乔恩询问风暴透镜。";
                 else if (_stormSignalQuest.Stage != StormSignalStage.Complete)
