@@ -204,6 +204,7 @@ namespace FoglightIsles
                 chartQuest.TalkToEileen();
                 if (captureLens)
                 {
+                    chartQuest.ReadRuinClue();
                     chartQuest.CollectChart();
                     chartQuest.TalkToEileen();
                     FindFirstObjectByType<StormSignalQuest>().TalkToJon();

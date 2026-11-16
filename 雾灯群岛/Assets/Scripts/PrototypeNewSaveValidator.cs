@@ -52,6 +52,7 @@ namespace FoglightIsles
             ProgressStore.SaveSurveyChartStage(SurveyChartStage.SearchRuin);
             ProgressStore.SaveSurveyClueRead();
             ProgressStore.SaveStormSignalStage(StormSignalStage.ReturnToShipwright);
+            ProgressStore.SaveStormVaneDirection(0);
             PlayerPrefs.SetInt(ProgressStore.StorageKey("foglightisles.discovery.harbour-log"), 1);
             PlayerPrefs.SetFloat(ProgressStore.StorageKey(VolumeKey), .42f);
             PlayerPrefs.SetFloat(ProgressStore.StorageKey(LookSensitivityKey), 1.5f);
@@ -80,6 +81,7 @@ namespace FoglightIsles
                          ProgressStore.LoadSurveyChartStage() == SurveyChartStage.Locked &&
                          !ProgressStore.HasReadSurveyClue &&
                          ProgressStore.LoadStormSignalStage() == StormSignalStage.Locked &&
+                         ProgressStore.LoadStormVaneDirection() == 1 &&
                          journal != null && journal.Count == 0 &&
                          boat != null && Mathf.Approximately(boat.MaxForwardSpeed, 11f) &&
                          !DialoguePanel.IsOpen && StartScreen.IsOpen &&
@@ -196,6 +198,7 @@ namespace FoglightIsles
             ProgressStore.SaveTideBeaconProgress(2);
             ProgressStore.SaveSurveyChartStage(SurveyChartStage.SearchRuin);
             ProgressStore.SaveStormSignalStage(StormSignalStage.ReturnToShipwright);
+            ProgressStore.SaveStormVaneDirection(0);
             string discoveryKey = ProgressStore.StorageKey("foglightisles.discovery.harbour-log");
             PlayerPrefs.SetInt(discoveryKey, 1);
             PlayerPrefs.SetFloat(ProgressStore.StorageKey(VolumeKey), .42f);
@@ -237,6 +240,7 @@ namespace FoglightIsles
                          !ProgressStore.HasSurveySail && ProgressStore.LoadTideBeaconProgress() == 0 &&
                          ProgressStore.LoadSurveyChartStage() == SurveyChartStage.Locked &&
                          ProgressStore.LoadStormSignalStage() == StormSignalStage.Locked &&
+                         ProgressStore.LoadStormVaneDirection() == 1 &&
                          journal != null && journal.Count == 0 &&
                          boat != null && Mathf.Approximately(boat.MaxForwardSpeed, 11f) &&
                          StartScreen.IsOpen && !FindFirstObjectByType<StartScreen>().IsConfirmingNewSave &&

@@ -143,7 +143,9 @@ namespace FoglightIsles
                 if (chart?.Stage == SurveyChartStage.SearchRuin)
                     return "已到潮汐浅滩：前往遗迹入口石台，找回失落航图。";
                 if (storm?.Stage == StormSignalStage.SearchTideflats)
-                    return "已到潮汐浅滩：到坍塌灯塔旁寻找蓝白色风暴透镜。";
+                    return storm.VaneAligned
+                        ? "已到潮汐浅滩：到坍塌灯塔旁取走蓝白色风暴透镜。"
+                        : "已到潮汐浅滩：对照海图，将坍塌灯塔旁的风向标转向晨湾港。";
                 return "已到潮汐浅滩：继续自由探索。按 E 或手柄 A 与附近物件交互。";
             }
             if (prism?.Stage == PrismQuestStage.ReturnToHarbour)

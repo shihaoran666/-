@@ -19,6 +19,7 @@ namespace FoglightIsles
         private GameObject _prism;
         private GameObject _surveyChart;
         private GameObject _stormLens;
+        private Transform _stormVane;
         private GameObject _lighthouseBeacon;
         private Light _lighthouseLight;
         private GameObject _harbourChartDisplay;
@@ -100,6 +101,7 @@ namespace FoglightIsles
             gameObject.AddComponent<PrototypeDiscoveryValidator>();
             gameObject.AddComponent<PrototypeNewSaveValidator>();
             gameObject.AddComponent<PrototypeChartOldSaveValidator>();
+            gameObject.AddComponent<PrototypeStormOldSaveValidator>();
             gameObject.AddComponent<PrototypePerformanceValidator>();
             gameObject.AddComponent<PrototypeVisualCapture>();
         }
@@ -245,7 +247,28 @@ namespace FoglightIsles
                 _stormSignalQuest.CollectLens();
                 if (_stormSignalQuest.Stage == StormSignalStage.ReturnToShipwright) _stormLens.SetActive(false);
             };
+            BuildStormVane();
             BuildLantern(new Vector3(2f, 1f, -68f));
+        }
+
+        private void BuildStormVane()
+        {
+            var vane = Primitive(PrimitiveType.Cylinder, "风向标", new Vector3(-7f, .65f, -87.4f),
+                new Vector3(.62f, 1.15f, .62f), _stone);
+            var pointer = Primitive(PrimitiveType.Cube, "风向标箭头", vane.transform.position + new Vector3(0f, .72f, .43f),
+                new Vector3(.18f, .1f, 1.05f), CreateMaterial(new Color(.95f, .75f, .26f), true));
+            pointer.transform.SetParent(vane.transform, true);
+            Destroy(pointer.GetComponent<Collider>());
+            var interaction = vane.AddComponent<Interactable>();
+            interaction.Title = "风向标";
+            interaction.Prompt = "旋转箭头至晨湾港";
+            interaction.OnInteracted = _ =>
+            {
+                _stormSignalQuest.RotateVane();
+                vane.transform.rotation = Quaternion.Euler(0f, _stormSignalQuest.VaneDirection * 90f, 0f);
+            };
+            vane.transform.rotation = Quaternion.Euler(0f, _stormSignalQuest.VaneDirection * 90f, 0f);
+            _stormVane = vane.transform;
         }
 
         private void BuildDiscoveries()
@@ -623,7 +646,7 @@ namespace FoglightIsles
                 ? "棱镜送回来了！我现在给晨鹱号换上勘测帆，航速和转向都会更灵活。"
                 : _stormSignalQuest.Stage switch
             {
-                StormSignalStage.SearchTideflats => "风暴透镜是块蓝白色晶片，就在坍塌灯塔旁的碎石间。",
+                StormSignalStage.SearchTideflats => "在海图上比较港口与浅滩方位；把坍塌灯塔旁的风向标转向港口，再取透镜。",
                 StormSignalStage.ReturnToShipwright => "你回来了？让我看看那枚透镜。港口的信号桅杆终于能再亮起来了。",
                 StormSignalStage.Complete => _discoveries.Count == _discoveries.Total
                     ? "你把四件旧物都找齐了。罗盘与护符上的刻痕相合，这片海还有未讲完的故事。"
@@ -764,7 +787,8 @@ namespace FoglightIsles
             if (stage == PrismQuestStage.Complete && _stormSignalQuest.Stage is not (StormSignalStage.Locked or StormSignalStage.Complete))
             {
                 if (_stormSignalQuest.Stage == StormSignalStage.SearchTideflats)
-                    _guidance.SetTarget(_stormLens.transform, "风暴透镜");
+                    _guidance.SetTarget(_stormSignalQuest.VaneAligned || _stormVane == null ? _stormLens.transform : _stormVane,
+                        _stormSignalQuest.VaneAligned ? "风暴透镜" : "校准风向标");
                 else
                     _guidance.SetTarget(_shipwright, "返回船匠乔恩处");
                 return;
@@ -906,8 +930,13 @@ namespace FoglightIsles
                 else if (_stormSignalQuest.Stage == StormSignalStage.Locked)
                     _guidance.SetTarget(_shipwright, "向乔恩询问风暴透镜");
                 else if (_stormSignalQuest.Stage == StormSignalStage.SearchTideflats)
-                    _guidance.SetTarget(_player.IsOnBoat ? _tideflatsDock.transform : atTideflats ? _stormLens.transform : _boat.transform,
-                        _player.IsOnBoat ? "驶向潮汐浅滩码头" : atTideflats ? "寻找风暴透镜" : "登上晨鹱号");
+                {
+                    Transform islandTarget = _stormSignalQuest.VaneAligned || _stormVane == null
+                        ? _stormLens.transform : _stormVane;
+                    string islandLabel = _stormSignalQuest.VaneAligned ? "寻找风暴透镜" : "校准风向标";
+                    _guidance.SetTarget(_player.IsOnBoat ? _tideflatsDock.transform : atTideflats ? islandTarget : _boat.transform,
+                        _player.IsOnBoat ? "驶向潮汐浅滩码头" : atTideflats ? islandLabel : "登上晨鹱号");
+                }
                 else if (_stormSignalQuest.Stage == StormSignalStage.ReturnToShipwright)
                     _guidance.SetTarget(_player.IsOnBoat ? _morningBayDock.transform : atTideflats ? _boat.transform : _shipwright,
                         _player.IsOnBoat ? "驶向晨湾港码头" : atTideflats ? "登上晨鹱号返航" : "交付透镜给乔恩");

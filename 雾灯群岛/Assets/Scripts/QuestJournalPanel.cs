@@ -185,7 +185,9 @@ namespace FoglightIsles
 
         private string StormDetail() => _storm?.Stage switch
         {
-            StormSignalStage.SearchTideflats => "到潮汐浅滩坍塌灯塔旁寻找蓝白色风暴透镜。",
+            StormSignalStage.SearchTideflats => _storm.VaneAligned
+                ? "风向标已指北；到坍塌灯塔旁取走蓝白色风暴透镜。"
+                : "在海图上比较晨湾港与浅滩的位置；旋转坍塌灯塔旁的风向标，使箭头指向港口。",
             StormSignalStage.ReturnToShipwright => "将透镜带回晨湾港交给船匠乔恩。",
             StormSignalStage.Complete => "信号桅杆已修复。试玩版主线完成，可以继续自由探索。",
             _ => "完成航图任务后，向乔恩询问风暴透镜。"
