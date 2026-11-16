@@ -11,7 +11,9 @@ namespace FoglightIsles
         private const string TideBeaconProgressKey = "foglightisles.tide-beacons.v1";
         private const string SurveyChartStageKey = "foglightisles.quest.survey-chart.v1";
         private const string StormSignalStageKey = "foglightisles.quest.storm-signal.v1";
+        internal const string StormVaneDirectionKey = "foglightisles.quest.storm-vane-direction.v1";
         private const string TideClueReadKey = "foglightisles.tide-clue-read.v1";
+        internal const string SurveyClueReadKey = "foglightisles.quest.survey-chart.clue.v1";
         private const string HarbourProsperityKey = "foglightisles.harbour.prosperity.v1";
         private const string HarbourRouteArchiveKey = "foglightisles.harbour.route-archive.v1";
         private static readonly bool IsInteractiveReview = Array.IndexOf(Environment.GetCommandLineArgs(), "-interactive-review") >= 0;
@@ -31,6 +33,8 @@ namespace FoglightIsles
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-first-quest-resume") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-chart-quest") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-chart-resume") >= 0 ||
+                                                       Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-chart-old-save") >= 0 ||
+                                                       Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-storm-old-save") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-storm-quest") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-storm-resume") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-free-roam") >= 0 ||
@@ -105,11 +109,33 @@ namespace FoglightIsles
             PlayerPrefs.Save();
         }
 
+        // 0 = north / harbour. Missing keys start east so old search saves can solve the new step.
+        public static int LoadStormVaneDirection() => Mathf.Clamp(PlayerPrefs.GetInt(StorageKey(StormVaneDirectionKey), 1), 0, 3);
+
+        public static void SaveStormVaneDirection(int direction)
+        {
+            PlayerPrefs.SetInt(StorageKey(StormVaneDirectionKey), Mathf.Clamp(direction, 0, 3));
+            PlayerPrefs.Save();
+        }
+
         public static bool HasReadTideClue => PlayerPrefs.GetInt(StorageKey(TideClueReadKey), 0) == 1;
 
         public static void SaveTideClueRead()
         {
             PlayerPrefs.SetInt(StorageKey(TideClueReadKey), 1);
+            PlayerPrefs.Save();
+        }
+
+        /// <summary>
+        /// The lost-chart quest's ruin inscription. Deliberately a separate key: the
+        /// SurveyChartStage integers are a saved-game contract, so a new step must not
+        /// be inserted into that enum. An old save without this key reads as "not read yet".
+        /// </summary>
+        public static bool HasReadSurveyClue => PlayerPrefs.GetInt(StorageKey(SurveyClueReadKey), 0) == 1;
+
+        public static void SaveSurveyClueRead()
+        {
+            PlayerPrefs.SetInt(StorageKey(SurveyClueReadKey), 1);
             PlayerPrefs.Save();
         }
 
@@ -143,7 +169,9 @@ namespace FoglightIsles
             PlayerPrefs.DeleteKey(StorageKey(TideBeaconProgressKey));
             PlayerPrefs.DeleteKey(StorageKey(SurveyChartStageKey));
             PlayerPrefs.DeleteKey(StorageKey(StormSignalStageKey));
+            PlayerPrefs.DeleteKey(StorageKey(StormVaneDirectionKey));
             PlayerPrefs.DeleteKey(StorageKey(TideClueReadKey));
+            PlayerPrefs.DeleteKey(StorageKey(SurveyClueReadKey));
             PlayerPrefs.DeleteKey(StorageKey(HarbourProsperityKey));
             PlayerPrefs.DeleteKey(StorageKey(HarbourRouteArchiveKey));
             PlayerPrefs.Save();

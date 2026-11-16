@@ -30,7 +30,8 @@ namespace FoglightIsles
                 ProgressStore.LoadSurveyChartStage() != SurveyChartStage.Complete ||
                 FindFirstObjectByType<QuestState>()?.Stage != PrismQuestStage.Complete ||
                 !ProgressStore.HasSurveySail || boat.MaxForwardSpeed != 13.5f || boat.TurnSpeed != 60f ||
-                GameObject.Find("Harbour Chart Display") == null || GameObject.Find("失落航图") != null)
+                GameObject.Find("Harbour Chart Display") == null || GameObject.Find("失落航图") != null ||
+                GameObject.Find("遗迹残碑")?.GetComponent<Interactable>()?.isActiveAndEnabled != false)
             {
                 Fail("chart hand-in, harbour display or boat upgrade did not restore after restart");
                 yield break;
@@ -94,16 +95,40 @@ namespace FoglightIsles
                 Vector3.Distance(player.transform.position, tideflats.DisembarkPosition) > .05f)
             { Fail("E did not land at Tideflats"); yield break; }
 
+            GuidanceMarker guidance = FindFirstObjectByType<GuidanceMarker>();
+            if (guidance?.Target?.name != "遗迹残碑")
+            { Fail("the compass did not point to the ruin inscription after landing"); yield break; }
+
             yield return Walk(player, keyboard, new Vector2(3.5f, -72.2f), null, "island sign");
             if (_failed) yield break;
             yield return Walk(player, keyboard, new Vector2(5f, -78f), null, "ruin entrance");
             if (_failed) yield break;
+            // The chart is gated on the ruin inscription: pressing E before reading it must
+            // change nothing and must not remove the object from the table.
+            yield return Walk(player, keyboard, new Vector2(8.3f, -82.3f), "失落航图", "lost chart");
+            if (_failed) yield break;
+            if (ProgressStore.HasReadSurveyClue)
+            { Fail("ruin clue read before the chart was reached; the gate cannot be exercised"); yield break; }
+            yield return PressE(keyboard);
+            if (chart.Stage != SurveyChartStage.SearchRuin || GameObject.Find("失落航图") == null)
+            { Fail("E collected the lost chart before the ruin inscription was read"); yield break; }
+            if (capture) yield return Capture("review-keyboard-chart-blocked.png");
+
+            yield return Walk(player, keyboard, new Vector2(6.6f, -83.6f), "遗迹残碑", "ruin inscription");
+            if (_failed) yield break;
+            if (capture) yield return Capture("review-keyboard-chart-clue.png");
+            yield return PressE(keyboard);
+            if (!ProgressStore.HasReadSurveyClue)
+            { Fail("E did not read the ruin inscription"); yield break; }
+            if (guidance.Target?.name != "失落航图")
+            { Fail("the compass did not switch to the chart after reading the inscription"); yield break; }
+
             yield return Walk(player, keyboard, new Vector2(8.3f, -82.3f), "失落航图", "lost chart");
             if (_failed) yield break;
             if (capture) yield return Capture("review-keyboard-chart-found.png");
             yield return PressE(keyboard);
             if (chart.Stage != SurveyChartStage.ReturnToHarbour || GameObject.Find("失落航图") != null)
-            { Fail("E did not collect the lost chart"); yield break; }
+            { Fail("E did not collect the lost chart after reading the inscription"); yield break; }
 
             yield return Walk(player, keyboard, new Vector2(5f, -78f), null, "ruin return");
             if (_failed) yield break;

@@ -133,9 +133,21 @@ namespace FoglightIsles
                 Fail("chart quest did not point the player to the boat");
                 yield break;
             }
+            if (!TryCollectFromApproach(player, "遗迹残碑", new Vector3(6.6f, .05f, -83.6f)) ||
+                !ProgressStore.HasReadSurveyClue || chart.Stage != SurveyChartStage.SearchRuin)
+            {
+                Fail("the ruin inscription could not be read before collecting the chart");
+                yield break;
+            }
             if (!TryCollectFromApproach(player, "失落航图", new Vector3(8.3f, .05f, -82.5f)))
             {
                 Fail("the chart cannot be selected from the ruin entrance");
+                yield break;
+            }
+            if (chart.Stage != SurveyChartStage.ReturnToHarbour ||
+                GameObject.Find("遗迹残碑")?.GetComponent<Interactable>()?.isActiveAndEnabled != false)
+            {
+                Fail("the chart clue stayed interactable after collection");
                 yield break;
             }
             MovePlayerTo(player, new Vector3(-7.4f, .05f, 7f));
@@ -146,6 +158,13 @@ namespace FoglightIsles
                 yield break;
             }
             bootstrap.TalkToJon();
+            for (int turn = 0; turn < 3; turn++)
+            {
+                if (!TryCollectFromApproach(player, "风向标", new Vector3(-7f, .05f, -85.8f)))
+                { Fail("the storm vane cannot be reached from the tower path"); yield break; }
+            }
+            if (!storm.VaneAligned)
+            { Fail("the storm vane did not point north after three turns"); yield break; }
             if (!TryCollectFromApproach(player, "风暴透镜", new Vector3(-4.6f, .05f, -89.8f)))
             {
                 Fail("the storm lens cannot be selected beside the collapsed lighthouse");

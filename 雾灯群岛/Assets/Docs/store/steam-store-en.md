@@ -1,169 +1,88 @@
-# Steam 商店页 · 英文成品文案（Foglight Isles）
+# Foglight Isles · Steam 英文 Demo 文案（内部待验收草案）
 
-> **中文说明（不提交给 Steam，仅内部使用）**
+> **状态：内部草案，不可直接提交或公开。** 对照 Windows Demo 0.2.4（构建编号 `20261116124313-A575D53C8ABF`）和当前源码撰写。英语尚未接入游戏界面；实体手柄往返、陌生玩家找路、目标硬件性能和英文小窗口排版仍待验收。文案与玩家实际体验核对后才能转为商店稿。
 >
-> - 本文件是英文商店页的**可提交成品文案**：字段名对应 Steamworks「Store Page → Edit Store Page」里的实际栏位，可直接复制粘贴。
-> - 短描述硬上限 300 字符，本稿 268 字符（含空格），留了余量；改动后必须重新数字符。
-> - **文案纪律**：当前可玩内容是 30–45 分钟垂直切片。凡本文写到「完整游戏」的段落，都是**商店页定位语**，必须在正式 Early Access / 1.0 页面上线前逐条核对是否属实；Demo 页只用「About the demo」一节的措辞，不得把未来功能写成已有。
-> - 主胶囊 / 截图 / 预告尚未产出，见 `capsule-specs.md`、`screenshot-shotlist.md`、`trailer-script.md`。缺图时**不要**先公开商店页（Steam 要求页面公开后至少 2 周才能发售，且缺图会被审核退回）。
-> - 标题字标（logo）尚未制作。Steam 要求胶囊上除游戏 logo 外不得有任何文字，因此 logo 是**硬阻塞项**，见 `launch-checklist.md`。
-> - 所有系统需求为草案，未经目标机实测，标 `[DRAFT]`，不得当作已验收数据。
+> 下文的 **Demo 现有内容** 仅描述当前可运行切片；**完整游戏方向** 是开发意向，不表示已经制作或承诺具体岛屿、谜题、时长与平台。Steam 页面字段、素材尺寸、语言勾选和审核要求在提交前须以当时的官方 Steamworks 文档核对，本文件不据此作平台规则断言。
 
----
+## Store Name · 候选
 
-## 1. Store Name
+`Foglight Isles`
 
-```
-Foglight Isles
-```
+中文名暂用《雾灯群岛》；正式上架名称由用户决定。
 
-> 中文名《雾灯群岛》用于中文商店页与国内宣发。Steam 同一 App 只能有一个商店名，若要中英双语标题，官方做法是在 About 首段首句点出中文名，**不要**在标题里塞 `雾灯群岛 / Foglight Isles`（会拉低搜索与列表可读性）。
+## Short Description · Demo 候选
 
----
-
-## 2. Short Description（≤300 characters）
-
-```
-Sail a small boat through a fogbound archipelago where the map gives you a bearing, not an arrow. Read the water, follow lighthouse beams and half-remembered landmarks, solve tide-lit puzzles, and bring every find home — the harbor changes because you came back.
+```text
+Explore Morningbay Harbor and the Tidal Shallows by boat. Follow compass bearings and sea chart markers, read stone clues, solve a three-beacon puzzle, and complete commissions that change the harbor in this single-player demo.
 ```
 
-字符数：**268 / 300**（含空格与标点）。
+当前短描述计数为 **227 字符**（含空格与标点）；最终提交前须重新计算。本句不声称没有地图标记、每次发现都会改变港口，或有多座完整岛屿。
 
-备选（更短，偏氛围，232 字符）：
+## About This Game · Demo 现有内容
 
-```
-A single-player sailing exploration game. No map markers, no quest arrows — just fog, lighthouse beams, and the landmarks you learn to trust. Every discovery you carry home changes the harbor you left.
-```
+```text
+Foglight Isles is a single-player sailing and exploration demo. Begin at Morningbay Harbor, take the helm of a small boat, and cross the fog to the Tidal Shallows. Your compass and sea chart show the direction of the current objective; signs and landmarks help you recognize the route.
 
----
+Meet Eileen, the harbor administrator, and Jon, the shipwright. Follow three connected commissions: restore the harbor lighthouse, recover a lost chart, and bring back a storm lens. At the shallows, read a stone clue and light three tide beacons in the correct order. Read a ruin inscription before taking the chart, then use the sea chart to align a wind vane before retrieving the storm lens.
 
-## 3. About This Game
+Returning with completed commissions changes the harbor: the lighthouse lights up, a chart appears by the navigation table, and a signal lamp comes on. An earned sail upgrade changes how the boat handles. Beyond the main commissions, four optional discoveries lead to an additional route display at the harbor.
 
-```
-The fog took the charts. It did not take the lights.
-
-Foglight Isles is a single-player exploration game about moving through a sea you cannot see across. You start in Morningbay Harbor with a borrowed boat, a lantern, and a handful of commissions nobody else wanted. Beyond the breakwater, the islands are out there — but the old sea roads are gone from every map, and the only things still pointing the way are lighthouses, stone markers, and the things people half-remember.
-
-You navigate by sight. Your compass tells you which way you are facing and roughly where your objective lies; it never plants a glowing arrow in the world. To find a route you read the water, watch for a beam cutting the fog, and learn which silhouette belongs to which island. Getting lost is part of the route. So is the moment the fog thins and the shape you have been chasing finally resolves into a shore.
-
-The islands are hand-built, not generated. Each one hides a small environmental puzzle — tide beacons that must be lit in the right order, an altar that only opens when the water agrees, a wreck that gives up its cargo at the right angle of light. Nothing here is solved by combat; it is solved by looking, listening, and trying the wrong order once.
-
-And then you sail home. This is the part that matters. The harbor you return to is not a menu you pass through: the lighthouse comes back to life, the chart table fills with paper, the signal mast runs a new color, and the people who sent you out have something new to say. Upgrades you earn change how the boat handles on the next crossing, so the sea you already crossed is never quite the same sea twice.
-
-Foglight Isles is a quiet game about attention — about learning a coastline well enough that you stop needing to be told where you are. It is built for one player, one boat, and the long way around.
+The demo saves quest and discovery progress locally. You can use a quest journal, a compass, and a sea chart while you explore.
 ```
 
-### About the demo
+本段是 0.2.4 的**候选英文表达**，不是英语已在游戏内可选的证明。实体手柄输入映射已实现，但真人手柄往返与菜单可用性仍待确认，因此暂不在公开文案宣称完整手柄支持。
 
-```
-The current demo is a 30–45 minute vertical slice: Morningbay Harbor, the Tidal Shallows, two harbor characters (Eileen and Jon), three connected commissions, one three-step tide-beacon puzzle, and four optional discoveries. It runs on keyboard/mouse or gamepad, is fully voiced in text, and saves your progress automatically. Everything above describes the direction of the full game; the demo shows the loop, not the whole coastline.
-```
+## Full Game Direction · 开发方向，暂不作为现有功能宣传
 
-> **合规提醒**：若商店页对应的是「完整游戏」而非 Demo 页，`About the demo` 段应移到 Demo App 的商店页，或改写为 `What's in the current build`。不要在正式页把 Demo 内容说成完整游戏体量。
-
----
-
-## 4. Feature List
-
-```
-• Navigate without markers — A compass bearing and your own eyes. No floating arrows, no minimap dots, no "objective 340 m" overlay. Landmarks are the map.
-• Lighthouse beams as roads — Follow a light through the fog to find a shore. Lights you restore become permanent routes for later crossings.
-• Hand-built islands, not generated terrain — A small, deliberate archipelago where every silhouette is placed to be recognized from the water.
-• Tide-beacon puzzles — Read the stone, light the beacons in the right order, and watch the sea open a door it had closed.
-• A harbor that answers back — Every return changes Morningbay: the lighthouse relights, the chart table fills, the signal mast changes color, and the people who sent you out react to what you brought home.
-• A boat that grows with you — Earn upgrades that change top speed and handling, so old routes feel different on the second pass.
-• Built for one player, keyboard or gamepad — Full gamepad support, adjustable volume, field of view, camera speed, and display mode. Progress saves automatically.
+```text
+The project aims to grow beyond this harbor-and-shallows demo into a larger journey of sailing, exploration, local stories, and visible changes to the places you revisit. The scope and features of that larger game will be defined through playtesting and development.
 ```
 
-（7 条，符合 5–7 条要求。若需压到 5 条，删「Hand-built islands」与「A boat that grows with you」，但这两条是差异化卖点，建议保留。）
+此段只能在页面明确区分现有 Demo 与未来规划时使用。不要把未来岛屿数量、沉船、每岛谜题、动态雾、水流导航、配音或游玩时长写成现有功能。
 
----
+## Feature Bullets · Demo 候选
 
-## 5. System Requirements `[DRAFT — 未实测]`
+```text
+• Sail between Morningbay Harbor and the Tidal Shallows, dock, and continue exploring on foot.
+• Use a compass, sea chart, journal, signs, and landmarks to follow the current objective.
+• Read stone clues and solve a three-beacon sequence puzzle at the shallows.
+• Complete three connected commissions that restore visible parts of the harbor.
+• Find four optional discoveries and unlock a route display when you bring their story home.
+```
 
-### Minimum
+## Supported Languages · 内部核对
 
-| Field | Value |
-| --- | --- |
-| OS | Windows 10 64-bit |
-| Processor | Intel Core i5-4460 / AMD Ryzen 3 1200 |
-| Memory | 8 GB RAM |
-| Graphics | NVIDIA GeForce GTX 960 (2 GB) / AMD Radeon RX 560 (4 GB) |
-| DirectX | Version 11 |
-| Storage | 4 GB available space |
-| Additional Notes | Targets 1920×1080 at 30 FPS on Low. Requires a keyboard and mouse or an XInput-compatible gamepad. |
-
-### Recommended
-
-| Field | Value |
-| --- | --- |
-| OS | Windows 11 64-bit |
-| Processor | Intel Core i5-10400 / AMD Ryzen 5 3600 |
-| Memory | 16 GB RAM |
-| Graphics | NVIDIA GeForce GTX 1660 (6 GB) / AMD Radeon RX 5600 XT (6 GB) |
-| DirectX | Version 12 |
-| Storage | 4 GB available space |
-| Additional Notes | Targets 1920×1080 at 60 FPS on High. |
-
-> **内部备注**：当前 Release Candidate 包体约 33 MB / 163 文件，存储写 4 GB 是为正式版留量，**上线前必须按真实安装体积复核**。Steam 不接受「未测试」的推荐配置作为承诺，M5 外测后要用至少 3 台真机填实测帧率，再决定是否降档。不支持 macOS / Linux，不要勾选。
-
----
-
-## 6. Steam Tags（候选，≤15）
-
-按优先级排列，前 5 个决定推荐算法归类，不要凑数：
-
-| # | Tag | 理由 |
+| Language | 当前 0.2.3 状态 | 商店勾选前门槛 |
 | --- | --- | --- |
-| 1 | Exploration | 核心动词 |
-| 2 | Sailing | 唯一性的第一识别 |
-| 3 | Adventure | 大类归属 |
-| 4 | Singleplayer | 明确单人 |
-| 5 | Atmospheric | 雾海氛围是卖点 |
-| 6 | Puzzle | 潮汐信标谜题 |
-| 7 | Mystery | 失落航线/旧物传闻 |
-| 8 | Relaxing | 无战斗、节奏舒缓 |
-| 9 | Indie | 身份标签 |
-| 10 | Third Person | 第三人称角色+船 |
-| 11 | Stylized | 美术方向（灰盒阶段慎用，见备注） |
-| 12 | Naval | 船只题材 |
-| 13 | Story Rich | 艾琳/乔恩与港口变化（**正式版再定**） |
-| 14 | Open World | **不要用**：设计边界明确写了「不制作无缝开放世界」 |
-| 15 | Walking Simulator | 不建议：会引来错误预期 |
+| Simplified Chinese | 玩家可见界面目前以中文为主 | 在分发包中复查全流程和遗漏文本 |
+| English | 有 `Localizer.cs` 与 `strings.json` 草案，但当前玩家界面未接线 | 完成接线、翻译复核、640×360 与 1080p 抓帧、键鼠/手柄全流程 |
+| 其他语言 | 未实现 | 有实际构建与完整校对后再决定 |
 
-实际建议提交 12 个：1–13 去掉 14/15，并暂缓 11、13 直到美术与剧情体量到位。**不要**用 `Great Soundtrack`（当前无音乐）、`Female Protagonist`、`Multiplayer`、`VR`。
+当前无角色语音资产，不能勾选 Full Audio。英语文本草案不能作为“已支持英语界面”的证据。
 
----
+## System Requirements · 内部待实测草案
 
-## 7. Supported Languages（占位表）
+以下仅为**待测试设备候选**，不是可提交的最低/推荐配置。目标设备、画质、分辨率、平均帧率和低帧率未形成完整实测报告。
 
-| Language | Interface | Full Audio | Subtitles |
-| --- | --- | --- | --- |
-| English | ✔ | — | ✔ |
-| Simplified Chinese | ✔ | — | ✔ |
-| Traditional Chinese | 待定 | — | 待定 |
-| Japanese | 待定 | — | 待定 |
-| French / German / Spanish (EU) / Russian / Portuguese (BR) | 待定 | — | 待定 |
+| 候选档位 | OS | CPU | Memory | GPU | 目标（未验证） |
+| --- | --- | --- | --- | --- | --- |
+| 最低候选 | Windows 10 64-bit | Intel Core i5-4460 / AMD Ryzen 3 1200 | 8 GB | GTX 960 / RX 560 | 1080p Low 30 FPS |
+| 推荐候选 | Windows 11 64-bit | Intel Core i5-10400 / AMD Ryzen 5 3600 | 16 GB | GTX 1660 / RX 5600 XT | 1080p High 60 FPS |
 
-> **内部备注**：当前工程为**全中文硬编码，无本地化层**（见 `Assets/Docs/launch-command-plan.md`）。上表英文列是**目标状态**，不是现状。在本地化层落地并完成英文全流程回归前，商店页只能勾选 Simplified Chinese；否则属于虚假陈述，退款与差评风险极高。Full Audio 一栏当前无配音资产，保持 `—`。
+存储空间、DirectX 版本及最终配置应按实际发布包与目标机器验证后填写；不可用上述候选数字声称已通过性能门槛。
 
----
+## 标签与素材 · 内部候选
 
-## 8. 提交前必须补齐（Checklist 摘要）
+- 与当前切片相符的标签候选：Exploration、Sailing、Adventure、Singleplayer、Puzzle、Third Person。是否使用 Atmospheric、Relaxing 等体验标签，待真人试玩反馈与最终画面核对。
+- 暂不采用 Open World、Story Rich、Great Soundtrack、Multiplayer、VR 等会制造错误预期的标签。
+- 截图应从实际构建拍摄并标注构建编号：晨湾港与 NPC、出航航线与船 HUD、浅滩石碑与三信标、灯塔修复前后、返港航图/信号桅杆及可选路线陈列。不要用概念主视觉冒充实机画面。
+- 商店胶囊、标题字标、截图、预告和页面字段均待正式素材制作及官方规范复核。
 
-- [ ] 标题字标 logo（透明底 PNG，含中英两版）
-- [ ] 主胶囊 616×353、header 460×215、small 231×87、vertical 374×448、library 600×900、library hero 3840×1240、page background 1438×810
-- [ ] 至少 5 张（建议 8 张）1920×1080 截图
-- [ ] 30 秒预告（MP4 / H.264 / 1920×1080）
-- [ ] 英文文案由母语者或专业译者过一遍（当前稿为可提交级，但仍建议润色）
-- [ ] 系统需求按实测填写，删除 `[DRAFT]`
-- [ ] 隐私政策 URL 与 EULA（见 `launch-checklist.md`）
+## 转为可提交文案的验收门槛
 
-## 9. 参考链接（官方）
+1. 真人用实体手柄完成去程、靠岸下船、返港与标题/地图/日志/暂停操作；至少一名陌生玩家无口头指导完成首航。
+2. 英语真正进入分发构建后，复查标题、HUD、罗盘、地图、日志、NPC 长对白、交互提示和设置菜单；640×360 与 1920×1080 均无裁切，英语读者理解任务目标。
+3. 目标硬件实测后填写系统需求；实际试玩计时后才考虑时长描述。
+4. 每个商店承诺对应当前构建截图、测试记录或代码证据；平台规则再查官方 Steamworks 文档。
 
-- Steamworks 文档总入口：https://partner.steamgames.com/doc/home
-- 商店素材规范：https://partner.steamgames.com/doc/store/assets
-- 上架流程入门：https://partner.steamgames.com/doc/gettingstarted
-- 预告片规范：https://partner.steamgames.com/doc/store/trailer
-- 成就：https://partner.steamgames.com/doc/features/achievements
-- Steam 云：https://partner.steamgames.com/doc/features/cloud
+核对记录见 [`coordination/updates/production-2026-11-16-store-fact-check.md`](../../../../coordination/updates/production-2026-11-16-store-fact-check.md)。

@@ -50,7 +50,9 @@ namespace FoglightIsles
             ProgressStore.UnlockSurveySail();
             ProgressStore.SaveTideBeaconProgress(2);
             ProgressStore.SaveSurveyChartStage(SurveyChartStage.SearchRuin);
+            ProgressStore.SaveSurveyClueRead();
             ProgressStore.SaveStormSignalStage(StormSignalStage.ReturnToShipwright);
+            ProgressStore.SaveStormVaneDirection(0);
             PlayerPrefs.SetInt(ProgressStore.StorageKey("foglightisles.discovery.harbour-log"), 1);
             PlayerPrefs.SetFloat(ProgressStore.StorageKey(VolumeKey), .42f);
             PlayerPrefs.SetFloat(ProgressStore.StorageKey(LookSensitivityKey), 1.5f);
@@ -77,7 +79,9 @@ namespace FoglightIsles
                          ProgressStore.LoadQuestStage() == PrismQuestStage.NotAccepted &&
                          !ProgressStore.HasSurveySail && ProgressStore.LoadTideBeaconProgress() == 0 &&
                          ProgressStore.LoadSurveyChartStage() == SurveyChartStage.Locked &&
+                         !ProgressStore.HasReadSurveyClue &&
                          ProgressStore.LoadStormSignalStage() == StormSignalStage.Locked &&
+                         ProgressStore.LoadStormVaneDirection() == 1 &&
                          journal != null && journal.Count == 0 &&
                          boat != null && Mathf.Approximately(boat.MaxForwardSpeed, 11f) &&
                          !DialoguePanel.IsOpen && StartScreen.IsOpen &&
@@ -90,11 +94,11 @@ namespace FoglightIsles
             PlayerPrefs.Save();
             if (!valid)
             {
-                Fail("new save retained progress/dialogue state or discarded audio settings");
+                Fail("new save retained progress/dialogue state (including the survey clue) or discarded audio settings");
                 yield break;
             }
 
-            Debug.Log("[FoglightIsles New Save] PASS — progress and dialogue reset; audio, look sensitivity and frame pacing settings retained.");
+            Debug.Log("[FoglightIsles New Save] PASS — progress, dialogue and the survey ruin clue reset; audio, look sensitivity and frame pacing settings retained.");
             Application.Quit(0);
         }
 
@@ -194,6 +198,7 @@ namespace FoglightIsles
             ProgressStore.SaveTideBeaconProgress(2);
             ProgressStore.SaveSurveyChartStage(SurveyChartStage.SearchRuin);
             ProgressStore.SaveStormSignalStage(StormSignalStage.ReturnToShipwright);
+            ProgressStore.SaveStormVaneDirection(0);
             string discoveryKey = ProgressStore.StorageKey("foglightisles.discovery.harbour-log");
             PlayerPrefs.SetInt(discoveryKey, 1);
             PlayerPrefs.SetFloat(ProgressStore.StorageKey(VolumeKey), .42f);
@@ -235,6 +240,7 @@ namespace FoglightIsles
                          !ProgressStore.HasSurveySail && ProgressStore.LoadTideBeaconProgress() == 0 &&
                          ProgressStore.LoadSurveyChartStage() == SurveyChartStage.Locked &&
                          ProgressStore.LoadStormSignalStage() == StormSignalStage.Locked &&
+                         ProgressStore.LoadStormVaneDirection() == 1 &&
                          journal != null && journal.Count == 0 &&
                          boat != null && Mathf.Approximately(boat.MaxForwardSpeed, 11f) &&
                          StartScreen.IsOpen && !FindFirstObjectByType<StartScreen>().IsConfirmingNewSave &&

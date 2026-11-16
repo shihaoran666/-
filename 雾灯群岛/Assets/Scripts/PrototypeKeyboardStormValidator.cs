@@ -94,10 +94,32 @@ namespace FoglightIsles
             if (player.IsOnBoat || boat.HasCaptain ||
                 Vector3.Distance(player.transform.position, tideflats.DisembarkPosition) > .05f)
             { Fail("E did not land at Tideflats"); yield break; }
+            GuidanceMarker guidance = FindFirstObjectByType<GuidanceMarker>();
+            if (guidance?.Target?.name != "风向标")
+            { Fail("the compass did not point to the storm vane after landing"); yield break; }
 
             yield return Walk(player, keyboard, new Vector2(0f, -78f), null, "island path");
             if (_failed) yield break;
             yield return Walk(player, keyboard, new Vector2(-3f, -85f), null, "collapsed tower approach");
+            if (_failed) yield break;
+            yield return Walk(player, keyboard, new Vector2(-4.6f, -89.8f), "风暴透镜", "storm lens");
+            if (_failed) yield break;
+            yield return PressE(keyboard);
+            if (storm.Stage != StormSignalStage.SearchTideflats || GameObject.Find("风暴透镜") == null)
+            { Fail("the storm lens was removable before calibrating the vane"); yield break; }
+            if (capture) yield return Capture("review-keyboard-storm-locked.png");
+
+            yield return Walk(player, keyboard, new Vector2(-3f, -85f), null, "tower return path");
+            if (_failed) yield break;
+            yield return Walk(player, keyboard, new Vector2(-7f, -85.8f), "风向标", "storm vane");
+            if (_failed) yield break;
+            if (capture) yield return Capture("review-keyboard-storm-vane.png");
+            for (int turn = 0; turn < 3; turn++) yield return PressE(keyboard);
+            if (!storm.VaneAligned || ProgressStore.LoadStormVaneDirection() != 0)
+            { Fail("the storm vane did not align north after three turns"); yield break; }
+            if (guidance.Target?.name != "风暴透镜")
+            { Fail("the compass did not switch to the storm lens after calibration"); yield break; }
+            yield return Walk(player, keyboard, new Vector2(-3f, -85f), null, "tower approach");
             if (_failed) yield break;
             yield return Walk(player, keyboard, new Vector2(-4.6f, -89.8f), "风暴透镜", "storm lens");
             if (_failed) yield break;

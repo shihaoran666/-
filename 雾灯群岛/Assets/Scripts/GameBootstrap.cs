@@ -19,6 +19,7 @@ namespace FoglightIsles
         private GameObject _prism;
         private GameObject _surveyChart;
         private GameObject _stormLens;
+        private Transform _stormVane;
         private GameObject _lighthouseBeacon;
         private Light _lighthouseLight;
         private GameObject _harbourChartDisplay;
@@ -34,6 +35,7 @@ namespace FoglightIsles
         private DockingPoint _morningBayDock;
         private DockingPoint _tideflatsDock;
         private Transform _tideClueTablet;
+        private Transform _surveyClueTablet;
         private Transform _tideBeaconSearchArea;
         private bool _tideClueRead;
         private readonly GameObject[] HarbourBeaconPylons = new GameObject[3];
@@ -98,6 +100,8 @@ namespace FoglightIsles
             gameObject.AddComponent<PrototypeQuestLoopValidator>();
             gameObject.AddComponent<PrototypeDiscoveryValidator>();
             gameObject.AddComponent<PrototypeNewSaveValidator>();
+            gameObject.AddComponent<PrototypeChartOldSaveValidator>();
+            gameObject.AddComponent<PrototypeStormOldSaveValidator>();
             gameObject.AddComponent<PrototypePerformanceValidator>();
             gameObject.AddComponent<PrototypeVisualCapture>();
         }
@@ -231,6 +235,7 @@ namespace FoglightIsles
                 _surveyQuest.CollectChart();
                 if (_surveyQuest.Stage == SurveyChartStage.ReturnToHarbour) _surveyChart.SetActive(false);
             };
+            BuildSurveyChartClue();
             Primitive(PrimitiveType.Cylinder, "风暴透镜石座", new Vector3(-4.6f, .3f, -91.5f), new Vector3(.8f, .3f, .8f), _stone);
             _stormLens = Primitive(PrimitiveType.Sphere, "风暴透镜", new Vector3(-4.6f, .85f, -91.5f), Vector3.one * .7f,
                 CreateMaterial(new Color(.35f, .8f, .95f), true));
@@ -242,7 +247,43 @@ namespace FoglightIsles
                 _stormSignalQuest.CollectLens();
                 if (_stormSignalQuest.Stage == StormSignalStage.ReturnToShipwright) _stormLens.SetActive(false);
             };
+            BuildStormVane();
             BuildLantern(new Vector3(2f, 1f, -68f));
+        }
+
+        private void BuildStormVane()
+        {
+            var vane = Primitive(PrimitiveType.Cylinder, "风向标", new Vector3(-7f, 1.25f, -87.4f),
+                new Vector3(.42f, 2.3f, .42f), _stone);
+            var accent = CreateMaterial(new Color(.14f, .72f, .83f), true);
+            var baseRing = Primitive(PrimitiveType.Cylinder, "风向标蓝纹底座", new Vector3(-7f, .12f, -87.4f),
+                new Vector3(1.05f, .2f, 1.05f), accent);
+            baseRing.transform.SetParent(vane.transform, true);
+            Destroy(baseRing.GetComponent<Collider>());
+            var topCap = Primitive(PrimitiveType.Cube, "风向标顶盖", vane.transform.position + Vector3.up * 1.18f,
+                new Vector3(.72f, .14f, .72f), accent);
+            topCap.transform.SetParent(vane.transform, true);
+            Destroy(topCap.GetComponent<Collider>());
+            var arrowMaterial = CreateMaterial(new Color(.95f, .75f, .26f), true);
+            var pointer = Primitive(PrimitiveType.Cube, "风向标箭头", vane.transform.position + new Vector3(0f, 1.3f, .48f),
+                new Vector3(.18f, .16f, 1.45f), arrowMaterial);
+            pointer.transform.SetParent(vane.transform, true);
+            Destroy(pointer.GetComponent<Collider>());
+            var arrowHead = Primitive(PrimitiveType.Cube, "风向标箭头尖端", vane.transform.position + new Vector3(0f, 1.3f, 1.15f),
+                new Vector3(.48f, .16f, .48f), arrowMaterial);
+            arrowHead.transform.rotation = Quaternion.Euler(0f, 45f, 0f);
+            arrowHead.transform.SetParent(vane.transform, true);
+            Destroy(arrowHead.GetComponent<Collider>());
+            var interaction = vane.AddComponent<Interactable>();
+            interaction.Title = "风向标";
+            interaction.Prompt = "旋转箭头至晨湾港";
+            interaction.OnInteracted = _ =>
+            {
+                _stormSignalQuest.RotateVane();
+                vane.transform.rotation = Quaternion.Euler(0f, _stormSignalQuest.DisplayVaneDirection * 90f, 0f);
+            };
+            vane.transform.rotation = Quaternion.Euler(0f, _stormSignalQuest.DisplayVaneDirection * 90f, 0f);
+            _stormVane = vane.transform;
         }
 
         private void BuildDiscoveries()
@@ -357,6 +398,32 @@ namespace FoglightIsles
                     "石碑上的灯纹从西向东排列：西侧信标 → 中央信标 → 东侧信标。");
             };
             _tideClueTablet = tablet.transform;
+        }
+
+        // Second quest's gating step: the chart on the table cannot be taken until this
+        // inscription has been read. Mirrors BuildTideClue so both clues persist the same way.
+        private void BuildSurveyChartClue()
+        {
+            var tablet = Primitive(PrimitiveType.Cube, "遗迹残碑", new Vector3(6.6f, .9f, -84.6f),
+                new Vector3(1.1f, 1.4f, .24f), CreateMaterial(new Color(.16f, .2f, .26f)));
+            var carving = CreateMaterial(new Color(.72f, .63f, .42f), true);
+            var crown = Primitive(PrimitiveType.Cube, "残碑发光冠饰", tablet.transform.position + Vector3.up * .74f,
+                new Vector3(1.22f, .1f, .3f), carving);
+            crown.transform.SetParent(tablet.transform, true);
+            Destroy(crown.GetComponent<Collider>());
+            for (int index = 0; index < 2; index++)
+            {
+                var mark = Primitive(PrimitiveType.Cube, "残碑航纹 " + (index + 1),
+                    tablet.transform.position + new Vector3((index - .5f) * .38f, .16f, .13f),
+                    new Vector3(.3f, .05f, .03f), carving);
+                mark.transform.SetParent(tablet.transform, true);
+                Destroy(mark.GetComponent<Collider>());
+            }
+            var interaction = tablet.AddComponent<Interactable>();
+            interaction.Title = "遗迹残碑";
+            interaction.Prompt = "辨认航图残记";
+            interaction.OnInteracted = _ => _surveyQuest.ReadRuinClue();
+            _surveyClueTablet = tablet.transform;
         }
 
         private void BuildBoat()
@@ -594,7 +661,7 @@ namespace FoglightIsles
                 ? "棱镜送回来了！我现在给晨鹱号换上勘测帆，航速和转向都会更灵活。"
                 : _stormSignalQuest.Stage switch
             {
-                StormSignalStage.SearchTideflats => "风暴透镜是块蓝白色晶片，就在坍塌灯塔旁的碎石间。",
+                StormSignalStage.SearchTideflats => "在海图上比较港口与浅滩方位；把坍塌灯塔旁的风向标转向港口，再取透镜。",
                 StormSignalStage.ReturnToShipwright => "你回来了？让我看看那枚透镜。港口的信号桅杆终于能再亮起来了。",
                 StormSignalStage.Complete => _discoveries.Count == _discoveries.Total
                     ? "你把四件旧物都找齐了。罗盘与护符上的刻痕相合，这片海还有未讲完的故事。"
@@ -722,7 +789,11 @@ namespace FoglightIsles
         {
             if (_prism != null) _prism.SetActive(stage == PrismQuestStage.SearchTideflats && _tidePuzzle.IsComplete);
             if (_surveyChart != null) _surveyChart.SetActive(_surveyQuest.Stage == SurveyChartStage.SearchRuin);
+            if (_surveyClueTablet != null && _surveyClueTablet.TryGetComponent<Interactable>(out var surveyClueInteraction))
+                surveyClueInteraction.enabled = _surveyQuest.Stage == SurveyChartStage.SearchRuin;
             if (_stormLens != null) _stormLens.SetActive(_stormSignalQuest.Stage == StormSignalStage.SearchTideflats);
+            if (_stormVane != null && _stormVane.TryGetComponent<Interactable>(out var stormVaneInteraction))
+                stormVaneInteraction.enabled = _stormSignalQuest.Stage == StormSignalStage.SearchTideflats;
             bool lighthouseRestored = stage == PrismQuestStage.Complete;
             if (_lighthouseBeacon != null) _lighthouseBeacon.SetActive(lighthouseRestored);
             if (_lighthouseLight != null) _lighthouseLight.enabled = lighthouseRestored;
@@ -735,7 +806,8 @@ namespace FoglightIsles
             if (stage == PrismQuestStage.Complete && _stormSignalQuest.Stage is not (StormSignalStage.Locked or StormSignalStage.Complete))
             {
                 if (_stormSignalQuest.Stage == StormSignalStage.SearchTideflats)
-                    _guidance.SetTarget(_stormLens.transform, "风暴透镜");
+                    _guidance.SetTarget(_stormSignalQuest.VaneAligned || _stormVane == null ? _stormLens.transform : _stormVane,
+                        _stormSignalQuest.VaneAligned ? "风暴透镜" : "校准风向标");
                 else
                     _guidance.SetTarget(_shipwright, "返回船匠乔恩处");
                 return;
@@ -743,7 +815,14 @@ namespace FoglightIsles
             if (stage == PrismQuestStage.Complete && _surveyQuest.Stage != SurveyChartStage.Locked && _surveyQuest.Stage != SurveyChartStage.Complete)
             {
                 if (_surveyQuest.Stage == SurveyChartStage.SearchRuin)
-                    _guidance.SetTarget(_surveyChart.transform, "失落航图");
+                {
+                    // Until the inscription is read the guidance points at it, not the chart,
+                    // so the compass never sends the player to an object they cannot take.
+                    if (_surveyQuest.ClueRead || _surveyClueTablet == null)
+                        _guidance.SetTarget(_surveyChart.transform, "失落航图");
+                    else
+                        _guidance.SetTarget(_surveyClueTablet, "遗迹残碑");
+                }
                 else
                     _guidance.SetTarget(_harbourManager, "返回晨湾港");
                 return;
@@ -857,16 +936,26 @@ namespace FoglightIsles
                 else if (_surveyQuest.Stage == SurveyChartStage.Locked)
                     _guidance.SetTarget(_harbourManager, "向艾琳询问失落航图");
                 else if (_surveyQuest.Stage == SurveyChartStage.SearchRuin)
-                    _guidance.SetTarget(_player.IsOnBoat ? _tideflatsDock.transform : atTideflats ? _surveyChart.transform : _boat.transform,
-                        _player.IsOnBoat ? "驶向潮汐浅滩码头" : atTideflats ? "寻找失落航图" : "登上晨鹱号");
+                {
+                    Transform islandTarget = _surveyQuest.ClueRead || _surveyClueTablet == null
+                        ? _surveyChart.transform : _surveyClueTablet;
+                    _guidance.SetTarget(_player.IsOnBoat ? _tideflatsDock.transform : atTideflats ? islandTarget : _boat.transform,
+                        _player.IsOnBoat ? "驶向潮汐浅滩码头" : atTideflats ?
+                            _surveyQuest.ClueRead ? "寻找失落航图" : "辨认遗迹残碑" : "登上晨鹱号");
+                }
                 else if (_surveyQuest.Stage == SurveyChartStage.ReturnToHarbour)
                     _guidance.SetTarget(_player.IsOnBoat ? _morningBayDock.transform : atTideflats ? _boat.transform : _harbourManager,
                         _player.IsOnBoat ? "驶向晨湾港码头" : atTideflats ? "登上晨鹱号返航" : "交付航图给艾琳");
                 else if (_stormSignalQuest.Stage == StormSignalStage.Locked)
                     _guidance.SetTarget(_shipwright, "向乔恩询问风暴透镜");
                 else if (_stormSignalQuest.Stage == StormSignalStage.SearchTideflats)
-                    _guidance.SetTarget(_player.IsOnBoat ? _tideflatsDock.transform : atTideflats ? _stormLens.transform : _boat.transform,
-                        _player.IsOnBoat ? "驶向潮汐浅滩码头" : atTideflats ? "寻找风暴透镜" : "登上晨鹱号");
+                {
+                    Transform islandTarget = _stormSignalQuest.VaneAligned || _stormVane == null
+                        ? _stormLens.transform : _stormVane;
+                    string islandLabel = _stormSignalQuest.VaneAligned ? "寻找风暴透镜" : "校准风向标";
+                    _guidance.SetTarget(_player.IsOnBoat ? _tideflatsDock.transform : atTideflats ? islandTarget : _boat.transform,
+                        _player.IsOnBoat ? "驶向潮汐浅滩码头" : atTideflats ? islandLabel : "登上晨鹱号");
+                }
                 else if (_stormSignalQuest.Stage == StormSignalStage.ReturnToShipwright)
                     _guidance.SetTarget(_player.IsOnBoat ? _morningBayDock.transform : atTideflats ? _boat.transform : _shipwright,
                         _player.IsOnBoat ? "驶向晨湾港码头" : atTideflats ? "登上晨鹱号返航" : "交付透镜给乔恩");

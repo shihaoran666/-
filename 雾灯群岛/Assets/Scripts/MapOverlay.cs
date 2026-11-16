@@ -79,6 +79,7 @@ namespace FoglightIsles
             if (GUI.Button(new Rect(left + width - 86f, top + 20f, 62f, 30f), "关闭")) SetOpen(false);
             GUI.Box(map, string.Empty);
             DrawTinted(new Rect(map.x + 2f, map.y + 2f, map.width - 4f, map.height - 4f), Texture2D.whiteTexture, new Color(.05f, .18f, .24f));
+            GUI.Label(new Rect(map.xMax - 58f, map.y + 10f, 50f, 26f), "N ↑", _body);
             Vector2 harbour = ToMap(map, new Vector3(0f, 0f, 12f));
             Vector2 tideflats = ToMap(map, new Vector3(0f, 0f, -82f));
             DrawTinted(new Rect(harbour.x - 105f, harbour.y - 45f, 210f, 90f), _islandMask, new Color(.28f, .38f, .33f));
