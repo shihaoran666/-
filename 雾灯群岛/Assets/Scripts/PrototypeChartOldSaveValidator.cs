@@ -66,8 +66,10 @@ namespace FoglightIsles
             }
 
             // ---- Case 3: completing a save that never read the clue is allowed ----
+            PlayerPrefs.DeleteKey(ProgressStore.StorageKey(ProgressStore.SurveyClueReadKey));
             ProgressStore.SaveSurveyChartStage(SurveyChartStage.Complete);
-            if (ProgressStore.LoadSurveyChartStage() != SurveyChartStage.Complete)
+            if (ProgressStore.LoadSurveyChartStage() != SurveyChartStage.Complete ||
+                ProgressStore.HasReadSurveyClue)
             {
                 Fail("a Complete save did not keep its stage");
                 yield break;

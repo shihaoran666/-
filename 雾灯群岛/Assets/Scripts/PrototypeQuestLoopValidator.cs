@@ -133,6 +133,12 @@ namespace FoglightIsles
                 Fail("chart quest did not point the player to the boat");
                 yield break;
             }
+            if (!TryCollectFromApproach(player, "遗迹残碑", new Vector3(6.6f, .05f, -83.6f)) ||
+                !ProgressStore.HasReadSurveyClue || chart.Stage != SurveyChartStage.SearchRuin)
+            {
+                Fail("the ruin inscription could not be read before collecting the chart");
+                yield break;
+            }
             if (!TryCollectFromApproach(player, "失落航图", new Vector3(8.3f, .05f, -82.5f)))
             {
                 Fail("the chart cannot be selected from the ruin entrance");
