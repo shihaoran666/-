@@ -30,7 +30,8 @@ namespace FoglightIsles
                 ProgressStore.LoadSurveyChartStage() != SurveyChartStage.Complete ||
                 FindFirstObjectByType<QuestState>()?.Stage != PrismQuestStage.Complete ||
                 !ProgressStore.HasSurveySail || boat.MaxForwardSpeed != 13.5f || boat.TurnSpeed != 60f ||
-                GameObject.Find("Harbour Chart Display") == null || GameObject.Find("失落航图") != null)
+                GameObject.Find("Harbour Chart Display") == null || GameObject.Find("失落航图") != null ||
+                GameObject.Find("遗迹残碑")?.GetComponent<Interactable>()?.isActiveAndEnabled != false)
             {
                 Fail("chart hand-in, harbour display or boat upgrade did not restore after restart");
                 yield break;

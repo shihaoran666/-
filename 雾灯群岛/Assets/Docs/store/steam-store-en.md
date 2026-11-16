@@ -1,6 +1,6 @@
 # Foglight Isles · Steam 英文 Demo 文案（内部待验收草案）
 
-> **状态：内部草案，不可直接提交或公开。** 对照 Windows Demo 0.2.3（构建编号 `20261116011838-D18E456C5884`）和当前源码撰写。英语尚未接入游戏界面；实体手柄往返、陌生玩家找路、目标硬件性能和英文小窗口排版仍待验收。文案与玩家实际体验核对后才能转为商店稿。
+> **状态：内部草案，不可直接提交或公开。** 对照 Windows Demo 0.2.4（构建编号 `20261116124313-A575D53C8ABF`）和当前源码撰写。英语尚未接入游戏界面；实体手柄往返、陌生玩家找路、目标硬件性能和英文小窗口排版仍待验收。文案与玩家实际体验核对后才能转为商店稿。
 >
 > 下文的 **Demo 现有内容** 仅描述当前可运行切片；**完整游戏方向** 是开发意向，不表示已经制作或承诺具体岛屿、谜题、时长与平台。Steam 页面字段、素材尺寸、语言勾选和审核要求在提交前须以当时的官方 Steamworks 文档核对，本文件不据此作平台规则断言。
 
@@ -23,14 +23,14 @@ Explore Morningbay Harbor and the Tidal Shallows by boat. Follow compass bearing
 ```text
 Foglight Isles is a single-player sailing and exploration demo. Begin at Morningbay Harbor, take the helm of a small boat, and cross the fog to the Tidal Shallows. Your compass and sea chart show the direction of the current objective; signs and landmarks help you recognize the route.
 
-Meet Eileen, the harbor administrator, and Jon, the shipwright. Follow three connected commissions: restore the harbor lighthouse, recover a lost chart, and bring back a storm lens. At the shallows, read a stone clue and light three tide beacons in the correct order. The lost chart also has a separate ruin clue that must be read before the chart can be collected.
+Meet Eileen, the harbor administrator, and Jon, the shipwright. Follow three connected commissions: restore the harbor lighthouse, recover a lost chart, and bring back a storm lens. At the shallows, read a stone clue and light three tide beacons in the correct order. Read a ruin inscription before taking the chart, then use the sea chart to align a wind vane before retrieving the storm lens.
 
 Returning with completed commissions changes the harbor: the lighthouse lights up, a chart appears by the navigation table, and a signal lamp comes on. An earned sail upgrade changes how the boat handles. Beyond the main commissions, four optional discoveries lead to an additional route display at the harbor.
 
 The demo saves quest and discovery progress locally. You can use a quest journal, a compass, and a sea chart while you explore.
 ```
 
-本段是 0.2.3 的**候选英文表达**，不是英语已在游戏内可选的证明。实体手柄输入映射已实现，但真人手柄往返与菜单可用性仍待确认，因此暂不在公开文案宣称完整手柄支持。
+本段是 0.2.4 的**候选英文表达**，不是英语已在游戏内可选的证明。实体手柄输入映射已实现，但真人手柄往返与菜单可用性仍待确认，因此暂不在公开文案宣称完整手柄支持。
 
 ## Full Game Direction · 开发方向，暂不作为现有功能宣传
 

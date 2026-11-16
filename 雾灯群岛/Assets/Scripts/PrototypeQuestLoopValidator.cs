@@ -144,6 +144,12 @@ namespace FoglightIsles
                 Fail("the chart cannot be selected from the ruin entrance");
                 yield break;
             }
+            if (chart.Stage != SurveyChartStage.ReturnToHarbour ||
+                GameObject.Find("遗迹残碑")?.GetComponent<Interactable>()?.isActiveAndEnabled != false)
+            {
+                Fail("the chart clue stayed interactable after collection");
+                yield break;
+            }
             MovePlayerTo(player, new Vector3(-7.4f, .05f, 7f));
             bootstrap.TalkToEileen();
             if (GameObject.Find("Harbour Chart Display") == null || GameObject.Find("Harbour Signal Lamp") != null)

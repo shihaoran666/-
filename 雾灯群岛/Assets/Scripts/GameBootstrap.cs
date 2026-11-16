@@ -253,12 +253,27 @@ namespace FoglightIsles
 
         private void BuildStormVane()
         {
-            var vane = Primitive(PrimitiveType.Cylinder, "风向标", new Vector3(-7f, .65f, -87.4f),
-                new Vector3(.62f, 1.15f, .62f), _stone);
-            var pointer = Primitive(PrimitiveType.Cube, "风向标箭头", vane.transform.position + new Vector3(0f, .72f, .43f),
-                new Vector3(.18f, .1f, 1.05f), CreateMaterial(new Color(.95f, .75f, .26f), true));
+            var vane = Primitive(PrimitiveType.Cylinder, "风向标", new Vector3(-7f, 1.25f, -87.4f),
+                new Vector3(.42f, 2.3f, .42f), _stone);
+            var accent = CreateMaterial(new Color(.14f, .72f, .83f), true);
+            var baseRing = Primitive(PrimitiveType.Cylinder, "风向标蓝纹底座", new Vector3(-7f, .12f, -87.4f),
+                new Vector3(1.05f, .2f, 1.05f), accent);
+            baseRing.transform.SetParent(vane.transform, true);
+            Destroy(baseRing.GetComponent<Collider>());
+            var topCap = Primitive(PrimitiveType.Cube, "风向标顶盖", vane.transform.position + Vector3.up * 1.18f,
+                new Vector3(.72f, .14f, .72f), accent);
+            topCap.transform.SetParent(vane.transform, true);
+            Destroy(topCap.GetComponent<Collider>());
+            var arrowMaterial = CreateMaterial(new Color(.95f, .75f, .26f), true);
+            var pointer = Primitive(PrimitiveType.Cube, "风向标箭头", vane.transform.position + new Vector3(0f, 1.3f, .48f),
+                new Vector3(.18f, .16f, 1.45f), arrowMaterial);
             pointer.transform.SetParent(vane.transform, true);
             Destroy(pointer.GetComponent<Collider>());
+            var arrowHead = Primitive(PrimitiveType.Cube, "风向标箭头尖端", vane.transform.position + new Vector3(0f, 1.3f, 1.15f),
+                new Vector3(.48f, .16f, .48f), arrowMaterial);
+            arrowHead.transform.rotation = Quaternion.Euler(0f, 45f, 0f);
+            arrowHead.transform.SetParent(vane.transform, true);
+            Destroy(arrowHead.GetComponent<Collider>());
             var interaction = vane.AddComponent<Interactable>();
             interaction.Title = "风向标";
             interaction.Prompt = "旋转箭头至晨湾港";
@@ -774,7 +789,11 @@ namespace FoglightIsles
         {
             if (_prism != null) _prism.SetActive(stage == PrismQuestStage.SearchTideflats && _tidePuzzle.IsComplete);
             if (_surveyChart != null) _surveyChart.SetActive(_surveyQuest.Stage == SurveyChartStage.SearchRuin);
+            if (_surveyClueTablet != null && _surveyClueTablet.TryGetComponent<Interactable>(out var surveyClueInteraction))
+                surveyClueInteraction.enabled = _surveyQuest.Stage == SurveyChartStage.SearchRuin;
             if (_stormLens != null) _stormLens.SetActive(_stormSignalQuest.Stage == StormSignalStage.SearchTideflats);
+            if (_stormVane != null && _stormVane.TryGetComponent<Interactable>(out var stormVaneInteraction))
+                stormVaneInteraction.enabled = _stormSignalQuest.Stage == StormSignalStage.SearchTideflats;
             bool lighthouseRestored = stage == PrismQuestStage.Complete;
             if (_lighthouseBeacon != null) _lighthouseBeacon.SetActive(lighthouseRestored);
             if (_lighthouseLight != null) _lighthouseLight.enabled = lighthouseRestored;

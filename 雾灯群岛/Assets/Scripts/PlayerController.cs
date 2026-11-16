@@ -242,7 +242,7 @@ namespace FoglightIsles
             for (int index = 0; index < count; index++)
             {
                 Collider hit = hits[index];
-                if (hit.GetComponentInParent<Interactable>() is { } interactable)
+                if (hit.GetComponentInParent<Interactable>() is { } interactable && interactable.isActiveAndEnabled)
                 {
                     float distance = Vector3.Distance(transform.position, interactable.transform.position);
                     if (distance < closestDistance)
