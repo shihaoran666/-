@@ -617,7 +617,7 @@ namespace FoglightIsles
             manager.AddComponent<NpcNameplate>().Configure("艾琳 · 港口管理员");
             managerInteraction.OnInteracted = _ => TalkToEileen();
 
-            var shipwright = Primitive(PrimitiveType.Capsule, "船匠乔恩", new Vector3(2.4f, 1f, 10.2f), new Vector3(.7f, 1f, .7f), CreateMaterial(new Color(.32f, .23f, .16f)));
+            var shipwright = Primitive(PrimitiveType.Capsule, "船匠乔恩", new Vector3(2.4f, 1f, 10.2f), new Vector3(.7f, 1f, .7f), CreateMaterial(new Color(.61f, .67f, .63f)));
             _shipwright = shipwright.transform;
             AttachNpcDecoration(shipwright, PrimitiveType.Cylinder, "乔恩的修船工具", new Vector3(.55f, .05f, 0f), new Vector3(.08f, .72f, .08f), _stone);
             AttachNpcDecoration(shipwright, PrimitiveType.Cube, "乔恩的锤头", new Vector3(.55f, .4f, 0f), new Vector3(.42f, .16f, .18f), _stone);

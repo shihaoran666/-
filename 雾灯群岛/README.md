@@ -54,6 +54,6 @@ Steam 单人自由探索冒险的 Unity 6 原型工程。首个垂直切片只�
 - `Foglight Isles > Build Windows Demo (Development)`：输出到 `Builds/Windows/FoglightIslesDemo.exe`，用于自动验证与本地调试。
 - `Foglight Isles > Build Windows Demo (Release Candidate)`：输出到 `Builds/ReleaseCandidate/FoglightIslesDemo.exe`，关闭 Unity Development 标记，作为 Steam 上传前的候选包。
 
-需要发送 Windows 试玩包时，在项目根目录运行 `./Tools/PackageWindowsDemo.ps1`。脚本将运行必需文件及 `PLAYTEST.txt`、`FEEDBACK_TEMPLATE.md`、`PLAYTEST_START.cmd` 打包到 `Builds/Distribution/FoglightIslesDemo-Windows-0.2.4.zip`，自动排除验收截图与 Unity 的 `DoNotShip` 调试目录。ZIP 内的 `BUILD_INFO.txt` 记录构建编号，解压后标题页也会显示同一编号，请在试玩反馈中填写。解压 ZIP 后双击 `PLAYTEST_START.cmd` 可使用独立试玩进度并生成 `playtest.log`；试玩时按 F12 的截图保存在本机 `AppData/LocalLow/Foglight Isles/Foglight Isles Demo/Screenshots`；直接运行 `FoglightIslesDemo.exe` 则使用常规进度。发布到 Steam 前仍需完成实体输入、显示模式和目标设备验收。
+需要发送 Windows 试玩包时，在项目根目录运行 `./Tools/PackageWindowsDemo.ps1`。脚本将运行必需文件及 `PLAYTEST.txt`、`FEEDBACK_TEMPLATE.md`、`PLAYTEST_START.cmd` 打包到 `Builds/Distribution/FoglightIslesDemo-Windows-0.2.5.zip`，自动排除验收截图与 Unity 的 `DoNotShip` 调试目录。ZIP 内的 `BUILD_INFO.txt` 记录构建编号，解压后标题页也会显示同一编号，请在试玩反馈中填写。解压 ZIP 后双击 `PLAYTEST_START.cmd` 可使用独立试玩进度并生成 `playtest.log`；试玩时按 F12 的截图保存在本机 `AppData/LocalLow/Foglight Isles/Foglight Isles Demo/Screenshots`；直接运行 `FoglightIslesDemo.exe` 则使用常规进度。发布到 Steam 前仍需完成实体输入、显示模式和目标设备验收。
 
 构建目录已被 Git 忽略。

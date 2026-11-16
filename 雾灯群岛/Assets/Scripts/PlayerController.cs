@@ -117,7 +117,9 @@ namespace FoglightIsles
             transform.localRotation = Quaternion.identity;
             foreach (Renderer renderer in GetComponentsInChildren<Renderer>()) renderer.enabled = false;
             boat.SetCaptain(this);
-            PrototypeHUD.SetMessage("已登船：W/S 加减速，A/D 转向；手柄用左摇杆。靠岸减速后按 E / A 下船。");
+            PrototypeHUD.SetMessage(InputPromptMode.UsingGamepad
+                ? "已登船：左摇杆加减速和转向；靠岸减速后按 A 下船。"
+                : "已登船：W/S 加减速，A/D 转向；靠岸减速后按 E 下船。");
         }
 
         public void LeaveBoat(Vector3 position)
