@@ -18,7 +18,7 @@
 | WorkBuddy 或其他文案 agent | 核对中英本地化和 Steam 草稿，输出“商店承诺→0.2.2 实证→删改”清单 | 不修改 Unity 脚本，不发布商店页 |
 | 视听工具/制作人 | 交付地标辨识草图、单件低模原型、关键事件短音候选及来源/授权记录 | 独立目录，集成前实机审查 |
 
-DeepSeek 已通过 Agent HUD 收到线索任务并开始处理，使用独立工作目录 `F:\github\agent-deepseek-chart-review` 和分支 `agent/deepseek/chart-clue-review`。WorkBuddy 尚未连通 Agent HUD 客户端钩子，文案任务已列在此页，但尚未直接送达。
+DeepSeek 已通过 Agent HUD 交付失落航图方案，见 [`deepseek-2026-11-16-chart-clue.md`](updates/deepseek-2026-11-16-chart-clue.md)。QA agent 已交付 [`qa-2026-11-16-playtest-gate.md`](updates/qa-2026-11-16-playtest-gate.md)，文案 agent 已交付 [`production-2026-11-16-store-fact-check.md`](updates/production-2026-11-16-store-fact-check.md)。三份交接只包含设计与验收，不代表 Unity 代码已集成或真人试玩已通过。WorkBuddy 仍未连通 Agent HUD 客户端钩子，任务尚未直接送达。
 
 ## 交接规则
 
