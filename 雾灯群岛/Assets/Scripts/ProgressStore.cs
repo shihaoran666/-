@@ -29,6 +29,7 @@ namespace FoglightIsles
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-gamepad-look") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-gamepad-voyage") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-gamepad-menu") >= 0 ||
+                                                       Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-gamepad-panel-flow") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-journey") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-island-resume") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-keyboard-first-quest") >= 0 ||

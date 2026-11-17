@@ -110,6 +110,7 @@ namespace FoglightIsles
         }
 
         internal void OpenForReview() => SetOpen(true);
+        internal void CloseForPause() { if (IsOpen) SetOpen(false); }
 
         private void DrawPlace(Rect map, Vector3 position, string label)
         {

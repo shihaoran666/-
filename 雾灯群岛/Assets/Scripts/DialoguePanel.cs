@@ -10,11 +10,13 @@ namespace FoglightIsles
         private static readonly Queue<string> Lines = new();
         private static string _speaker;
         private static int _canAdvanceAfterFrame;
+        private static int _suppressAdvanceThroughFrame = -1;
         private GUIStyle _speakerStyle;
         private GUIStyle _lineStyle;
 
         public static bool IsOpen => Lines.Count > 0;
         internal static string CurrentLine => IsOpen ? Lines.Peek() : string.Empty;
+        internal static void SuppressAdvanceForFrame() => _suppressAdvanceThroughFrame = Time.frameCount;
 
         public static void Show(string speaker, params string[] lines)
         {
@@ -29,7 +31,7 @@ namespace FoglightIsles
 
         private void Update()
         {
-            if (!IsOpen || PauseMenu.IsPaused) return;
+            if (!IsOpen || PauseMenu.IsPaused || Time.frameCount <= _suppressAdvanceThroughFrame) return;
             bool advance = (Keyboard.current != null && (Keyboard.current.eKey.wasPressedThisFrame || Keyboard.current.spaceKey.wasPressedThisFrame)) ||
                            (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
             if (advance && Time.frameCount >= _canAdvanceAfterFrame) Lines.Dequeue();

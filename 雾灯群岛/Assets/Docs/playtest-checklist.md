@@ -143,6 +143,16 @@ Windows 开发构建可使用以下命令检查靠岸与返航路径，不会写
 
 日志出现 `[FoglightIsles Gamepad Menu] PASS` 表示手柄菜单绑定、设置保存与暂停恢复路径通过；实体手柄和实际垂直同步观感仍须人工检查。
 
+## 虚拟手柄面板切换检查
+
+在批处理图形模式运行以下命令，依次检查 View 打开海图、Menu 转入暂停、B 返回；Y 打开日志后的同一路径；以及对话中暂停、返回后继续原句。此验证使用独立 `.validation` 存档。
+
+```powershell
+& .\Builds\ReleaseCandidate\FoglightIslesDemo.exe -batchmode -screen-fullscreen 0 -screen-width 800 -screen-height 600 -verify-gamepad-panel-flow -logFile .\gamepad-panel-flow.log
+```
+
+日志出现 `[FoglightIsles Gamepad Panel Flow] PASS` 表示这三条按键状态转移通过。实体手柄的按键手感与玩家是否理解仍需真人验收。
+
 ## 虚拟手柄出航检查
 
 在普通图形窗口运行以下命令，使用独立验证存档，以虚拟手柄 A 和左摇杆从新档标题进入、接任务、登船、驶向浅滩、靠岸下船、再登船返港并再次下船：

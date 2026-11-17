@@ -18,6 +18,11 @@ namespace FoglightIsles
                 Application.runInBackground = true;
                 StartCoroutine(VerifyMenu());
             }
+            else if (Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-gamepad-panel-flow") >= 0)
+            {
+                Application.runInBackground = true;
+                StartCoroutine(VerifyPanelFlow());
+            }
         }
 
         private static IEnumerator VerifyLook()
@@ -125,6 +130,65 @@ namespace FoglightIsles
             yield return null;
             InputSystem.QueueStateEvent(pad, new GamepadState());
             yield return null;
+        }
+
+        private static IEnumerator VerifyPanelFlow()
+        {
+            yield return null;
+            Gamepad pad = InputSystem.AddDevice<Gamepad>();
+            yield return Press(pad, GamepadButton.South);
+            if (StartScreen.IsOpen) { FailPanel("A did not leave the title screen"); yield break; }
+
+            yield return Press(pad, GamepadButton.Select);
+            if (!MapOverlay.IsOpen || Time.timeScale != 0f)
+            { FailPanel("View did not open the map"); yield break; }
+            yield return Press(pad, GamepadButton.Start);
+            if (MapOverlay.IsOpen || !PauseMenu.IsPaused || Time.timeScale != 0f)
+            { FailPanel("Menu did not switch from map to pause"); yield break; }
+            yield return Press(pad, GamepadButton.East);
+            if (PauseMenu.IsPaused || MapOverlay.IsOpen || Time.timeScale != 1f)
+            { FailPanel("B did not resume play after map-to-pause"); yield break; }
+
+            yield return Press(pad, GamepadButton.North);
+            if (!QuestJournalPanel.IsOpen || Time.timeScale != 0f)
+            { FailPanel("Y did not open the journal"); yield break; }
+            yield return Press(pad, GamepadButton.Start);
+            if (QuestJournalPanel.IsOpen || !PauseMenu.IsPaused || Time.timeScale != 0f)
+            { FailPanel("Menu did not switch from journal to pause"); yield break; }
+            yield return Press(pad, GamepadButton.East);
+            if (PauseMenu.IsPaused || QuestJournalPanel.IsOpen || Time.timeScale != 1f)
+            { FailPanel("B did not resume play after journal-to-pause"); yield break; }
+
+            DialoguePanel.Show("艾琳", "测试对话的暂停与恢复。");
+            yield return Press(pad, GamepadButton.Start);
+            if (!PauseMenu.IsPaused || !DialoguePanel.IsOpen || Time.timeScale != 0f)
+            { FailPanel("Menu did not pause an open dialogue"); yield break; }
+            yield return Press(pad, GamepadButton.East);
+            if (PauseMenu.IsPaused || !DialoguePanel.IsOpen || Time.timeScale != 1f)
+            { FailPanel("B did not restore the open dialogue"); yield break; }
+            yield return Press(pad, GamepadButton.South);
+            if (DialoguePanel.IsOpen)
+            { FailPanel("A did not advance the restored dialogue"); yield break; }
+
+            DialoguePanel.Show("艾琳", "第一句必须保留。", "第二句等待确认。");
+            yield return Press(pad, GamepadButton.Start);
+            if (!PauseMenu.IsPaused) { FailPanel("Menu did not pause the second dialogue"); yield break; }
+            yield return Press(pad, GamepadButton.South);
+            if (PauseMenu.IsPaused || DialoguePanel.CurrentLine != "第一句必须保留。")
+            { FailPanel("A resumed play and also advanced dialogue in the same frame"); yield break; }
+            yield return Press(pad, GamepadButton.South);
+            if (DialoguePanel.CurrentLine != "第二句等待确认。")
+            { FailPanel("A did not advance dialogue on a separate press"); yield break; }
+
+            InputSystem.RemoveDevice(pad);
+            Debug.Log("[FoglightIsles Gamepad Panel Flow] PASS — Menu switched map and journal to pause; B and A resumed play without skipping dialogue.");
+            Application.Quit(0);
+        }
+
+        private static void FailPanel(string reason)
+        {
+            Debug.LogError($"[FoglightIsles Gamepad Panel Flow] FAIL — {reason}.");
+            Application.Quit(1);
         }
 
         private static void Fail(string reason)

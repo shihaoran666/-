@@ -71,9 +71,18 @@ namespace FoglightIsles
 
         private void Update()
         {
-            if (StartScreen.IsOpen || MapOverlay.IsOpen || QuestJournalPanel.IsOpen) return;
-            bool toggle = (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) ||
-                          (Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame);
+            if (StartScreen.IsOpen) return;
+            bool gamepadToggle = Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame;
+            if (MapOverlay.IsOpen || QuestJournalPanel.IsOpen)
+            {
+                // Esc/B still closes the current panel. Menu moves directly to pause.
+                if (!gamepadToggle) return;
+                GetComponent<MapOverlay>()?.CloseForPause();
+                GetComponent<QuestJournalPanel>()?.CloseForPause();
+                SetPaused(true);
+                return;
+            }
+            bool toggle = (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame) || gamepadToggle;
             if (toggle)
             {
                 SetPaused(!_paused);
@@ -115,6 +124,7 @@ namespace FoglightIsles
 
         private void SetPaused(bool paused)
         {
+            if (_paused && !paused && DialoguePanel.IsOpen) DialoguePanel.SuppressAdvanceForFrame();
             _paused = paused;
             IsPaused = paused;
             if (paused)

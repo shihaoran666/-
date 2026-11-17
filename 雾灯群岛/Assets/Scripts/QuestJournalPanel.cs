@@ -44,6 +44,7 @@ namespace FoglightIsles
         }
 
         internal void OpenForReview() => SetOpen(true);
+        internal void CloseForPause() { if (IsOpen) SetOpen(false); }
         internal void OpenDiscoveriesForReview()
         {
             SetOpen(true);
