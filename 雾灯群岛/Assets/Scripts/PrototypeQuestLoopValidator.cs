@@ -83,16 +83,18 @@ namespace FoglightIsles
                 yield break;
             }
             puzzle.Activate(2); // Intentionally wrong: confirms the reset path before solving.
-            if (ProgressStore.LoadTideBeaconProgress() != 0)
+            if (ProgressStore.LoadTideBeaconProgress() != 0 || !LitBeaconCapsMatch(0))
             {
-                Fail("incorrect tide beacon order did not reset");
+                Fail("incorrect tide beacon order did not reset saved state and visual caps");
                 yield break;
             }
 
             puzzle.Activate(0);
+            if (!LitBeaconCapsMatch(1)) { Fail("first beacon visual cap did not appear alone"); yield break; }
             puzzle.Activate(1);
+            if (!LitBeaconCapsMatch(2)) { Fail("second beacon visual cap did not appear"); yield break; }
             puzzle.Activate(2);
-            if (!puzzle.IsComplete || ProgressStore.LoadTideBeaconProgress() != 3)
+            if (!puzzle.IsComplete || ProgressStore.LoadTideBeaconProgress() != 3 || !LitBeaconCapsMatch(3))
             {
                 Fail("tide beacon sequence did not persist");
                 yield break;
@@ -201,6 +203,14 @@ namespace FoglightIsles
             Interactable nearby = player.FindNearbyInteractable();
             if (nearby == null || nearby.gameObject.name != objectName) return false;
             nearby.Interact(player);
+            return true;
+        }
+
+        private static bool LitBeaconCapsMatch(int litCount)
+        {
+            string[] names = { "西侧潮汐信标点亮柱", "中央潮汐信标点亮柱", "东侧潮汐信标点亮柱" };
+            for (int index = 0; index < names.Length; index++)
+                if ((GameObject.Find(names[index]) != null) != (index < litCount)) return false;
             return true;
         }
 
