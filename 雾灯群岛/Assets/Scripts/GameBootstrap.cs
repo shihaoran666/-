@@ -570,7 +570,7 @@ namespace FoglightIsles
         {
             const int sides = 12;
             var vertices = new Vector3[(sides + 1) * 2];
-            var triangles = new int[sides * 12];
+            var triangles = new int[sides * 6];
             for (int side = 0; side <= sides; side++)
             {
                 float angle = side * Mathf.PI * 2f / sides;
@@ -580,29 +580,24 @@ namespace FoglightIsles
                 if (side == sides) continue;
                 int a = side * 2;
                 int next = (side + 1) * 2;
-                int t = side * 12;
+                int t = side * 6;
                 triangles[t] = a; triangles[t + 1] = next; triangles[t + 2] = a + 1;
                 triangles[t + 3] = next; triangles[t + 4] = next + 1; triangles[t + 5] = a + 1;
-                triangles[t + 6] = a + 1; triangles[t + 7] = next; triangles[t + 8] = a;
-                triangles[t + 9] = a + 1; triangles[t + 10] = next + 1; triangles[t + 11] = next;
             }
             var mesh = new Mesh { name = name };
             mesh.vertices = vertices;
             mesh.triangles = triangles;
-            mesh.RecalculateNormals();
+            Shader beamShader = Resources.Load<Shader>("FoglightBeam");
+            if (beamShader == null)
+            {
+                Debug.LogError("[FoglightIsles] Lighthouse beam shader is missing from this build.");
+                return;
+            }
             var shell = new GameObject(name);
             shell.transform.SetParent(parent, false);
             shell.AddComponent<MeshFilter>().sharedMesh = mesh;
-            var material = CreateMaterial(new Color(1f, .55f, .16f, opacity), true);
-            material.SetFloat("_Mode", 2f);
-            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            material.SetInt("_ZWrite", 0);
-            material.DisableKeyword("_ALPHATEST_ON");
-            material.EnableKeyword("_ALPHABLEND_ON");
-            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
-            material.SetColor("_EmissionColor", new Color(1f, .48f, .08f) * 2f);
+            var material = new Material(beamShader);
+            material.SetColor("_Color", new Color(1f, .55f, .16f, opacity));
             shell.AddComponent<MeshRenderer>().sharedMaterial = material;
         }
 
