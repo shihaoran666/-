@@ -10,7 +10,7 @@ namespace FoglightIsles
         // (~94 m away). A point light fades under the fog long before that distance, so the beam
         // carries the state change instead of the light.
         private const float LighthouseBeamLength = 58f;
-        private const float LighthouseBeamRadius = .42f;
+        private const float LighthouseBeamRadius = .9f;
 
         private Material _wood;
         private Material _stone;
@@ -525,9 +525,12 @@ namespace FoglightIsles
             var beamPivot = new GameObject("Lighthouse Beam Pivot");
             beamPivot.transform.SetParent(_lighthouseBeacon.transform, false);
             beamPivot.transform.localPosition = Vector3.zero;
-            var beamMaterial = CreateMaterial(new Color(1f, .66f, .3f), true);
+            // The beacon cylinder is scaled; cancel that scale so the beam keeps its intended world length and radius.
+            Vector3 beaconScale = _lighthouseBeacon.transform.lossyScale;
+            beamPivot.transform.localScale = new Vector3(1f / beaconScale.x, 1f / beaconScale.y, 1f / beaconScale.z);
+            var beamMaterial = CreateMaterial(new Color(2f, .95f, .12f), true);
             if (beamMaterial != null && beamMaterial.HasProperty("_EmissionColor"))
-                beamMaterial.SetColor("_EmissionColor", new Color(1f, .66f, .3f) * 4.2f);
+                beamMaterial.SetColor("_EmissionColor", new Color(1f, .48f, .08f) * 4.2f);
             var beam = Primitive(PrimitiveType.Cylinder, "Lighthouse Sweep Beam", position + Vector3.up * 8.2f,
                 new Vector3(LighthouseBeamRadius * 2f, LighthouseBeamLength * .5f, LighthouseBeamRadius * 2f),
                 beamMaterial);

@@ -255,6 +255,17 @@ namespace FoglightIsles
                 captureLighthouseUnlit ? "../review-lighthouse-unlit.png" : captureLighthouse ? "../review-lighthouse-lit.png" : "../review-harbour.png");
             ScreenCapture.CaptureScreenshot(path);
             Debug.Log($"[FoglightIsles Capture] Saved review frame to {path}");
+            if (captureLighthouse && Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-lighthouse-sweep-review") >= 0)
+            {
+                for (int step = 1; step <= 3; step++)
+                {
+                    yield return new WaitForSecondsRealtime(1.25f);
+                    yield return new WaitForEndOfFrame();
+                    string sweepPath = Path.Combine(Application.dataPath, $"../review-lighthouse-sweep-{step}.png");
+                    ScreenCapture.CaptureScreenshot(sweepPath);
+                    Debug.Log($"[FoglightIsles Capture] Saved review frame to {sweepPath}");
+                }
+            }
             yield return new WaitForSecondsRealtime(2f);
             Application.Quit(0);
         }
