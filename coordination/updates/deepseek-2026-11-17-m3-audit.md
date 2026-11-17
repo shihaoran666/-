@@ -4,6 +4,6 @@
 - 已实现：第一条任务读石碑、按顺序点亮信标，返港修复灯塔并获得勘测帆；第二条读遗迹残碑后取航图，返港出现导航台航图；第三条对照海图转风向标后取透镜，返港点亮信号桅杆。三条任务阶段和线索各自保存，完成后港口逐步增加引航灯。
 - 仍重复：三条任务均从晨湾港乘船至潮汐浅滩、完成当地交互再返港；第二、三条的前置操作比较接近。风向标从东方开始，向同一方向转三次即可对齐北方，代码无法判断玩家是否真正理解海图。现有试玩证据没有真人对任务节奏的反馈。
 - DeepSeek 建议为第三条任务加入“先打开海图”门槛。集成判断：单纯记录打开地图只能证明按过地图键，不能证明玩家辨认方位，还会给旧存档增加迁移边界。本轮先不接入硬门槛。0.2.9 真人试玩应记录玩家是否主动看图、转动次数、是否猜中及是否觉得第三次返航重复；有证据后再决定交互形态。
-- 本轮先修复明确可见的第二条任务对白：`GameBootstrap.EileenLine` 原先被港口灯火通用句覆盖，打开对白时 `PrototypeHUD.OnGUI` 会隐藏 HUD 信息；现优先呈现航图任务句并明确“潮汐浅滩遗迹”。`PrototypeQuestLoopValidator` 增加接取与交付时的对白断言。Unity 源码构建、任务闭环、键盘首任务和键盘航图任务 PASS；640×360 接取/交付截图的正文与操作提示均完整。截图在本机 `Builds/ReleaseCandidate/review-keyboard-chart-accepted.png`、`review-keyboard-chart-hand-in.png`，不入库。此修复尚未收入 0.2.9 ZIP。
+- 本轮先修复明确可见的第二条任务对白：`GameBootstrap.EileenLine` 原先被港口灯火通用句覆盖，打开对白时 `PrototypeHUD.OnGUI` 会隐藏 HUD 信息；现优先呈现航图任务句并明确“潮汐浅滩遗迹”。`PrototypeQuestLoopValidator` 增加接取与交付时的对白断言。Unity 源码构建、任务闭环、键盘首任务、键盘航图任务及独立进程航图续档 PASS；640×360 接取/交付截图的正文与操作提示均完整。截图在本机 `Builds/ReleaseCandidate/review-keyboard-chart-accepted.png`、`review-keyboard-chart-hand-in.png`，不入库。此修复尚未收入 0.2.9 ZIP。
 
 下一接手人：QA 收集 0.2.9 真人任务节奏反馈；Codex 根据结果决定第三条任务是否需要新的方位选择交互。
