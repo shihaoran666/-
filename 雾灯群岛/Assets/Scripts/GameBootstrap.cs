@@ -194,6 +194,7 @@ namespace FoglightIsles
             BuildSignpost(new Vector3(-1.8f, 1.2f, 5.8f), "潮汐浅滩航线", "从主码头登上晨鹱号，向南航行到潮汐浅滩码头。靠岸时减速，再按 E 下船。");
             BuildSignpost(new Vector3(7.2f, 1.2f, 8.5f), "灯塔栈桥", "晨湾港灯塔在东侧。带回棱镜交给艾琳，才能重新点亮灯塔。");
             _morningBayDock = BuildDockingPoint(new Vector3(0f, .25f, -3.2f), "晨湾港码头", new Vector3(-1.4f, 1f, 0f));
+            BuildDockGuide(_morningBayDock.transform.position, "晨湾港");
         }
 
         private void BuildTideflats()
@@ -202,6 +203,8 @@ namespace FoglightIsles
             island.transform.rotation = Quaternion.Euler(0f, 11f, 0f);
             BuildDock(new Vector3(0f, .15f, -67f), new Vector3(4f, .3f, 9f), "Tideflats Dock");
             _tideflatsDock = BuildDockingPoint(new Vector3(0f, .25f, -66.5f), "潮汐浅滩码头", new Vector3(1.4f, 1f, 0f));
+            // The tideflats trigger is 3.5 m behind the sea-facing end; mark the end so the boat need not cross the deck.
+            BuildDockGuide(new Vector3(0f, .25f, -63f), "潮汐浅滩");
             _tideBeaconSearchArea = new GameObject("Tide Beacon Search Area").transform;
             _tideBeaconSearchArea.position = new Vector3(0f, 1f, -84f);
 
@@ -479,6 +482,24 @@ namespace FoglightIsles
                 Primitive(PrimitiveType.Cylinder, name + " Post", position + new Vector3(-scale.x / 2f + .4f, .75f, z), new Vector3(.25f, 1.5f, .25f), _wood);
                 Primitive(PrimitiveType.Cylinder, name + " Post", position + new Vector3(scale.x / 2f - .4f, .75f, z), new Vector3(.25f, 1.5f, .25f), _wood);
             }
+        }
+
+        private void BuildDockGuide(Vector3 dockingPosition, string name)
+        {
+            // Three collision-free warm marks show the usable docking side before the 6 m docking radius is reached.
+            for (int side = -1; side <= 1; side += 2)
+            {
+                var post = Primitive(PrimitiveType.Cube, name + "靠岸边柱",
+                    dockingPosition + new Vector3(side * 1.55f, .5f, 0f),
+                    new Vector3(.18f, .9f, .18f), _warmLight);
+                post.GetComponent<Collider>().enabled = false;
+                Destroy(post.GetComponent<Collider>());
+            }
+            var edge = Primitive(PrimitiveType.Cube, name + "靠岸边线",
+                dockingPosition + new Vector3(0f, .09f, 0f),
+                new Vector3(3.25f, .06f, .18f), _warmLight);
+            edge.GetComponent<Collider>().enabled = false;
+            Destroy(edge.GetComponent<Collider>());
         }
 
         private void BuildRock(Vector3 position, Vector3 scale)
