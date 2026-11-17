@@ -10,7 +10,7 @@ namespace FoglightIsles
         // (~94 m away). A point light fades under the fog long before that distance, so the beam
         // carries the state change instead of the light.
         private const float LighthouseBeamLength = 58f;
-        private const float LighthouseBeamRadius = .9f;
+        private const float LighthouseBeamNearRadius = .12f;
 
         private Material _wood;
         private Material _stone;
@@ -547,25 +547,16 @@ namespace FoglightIsles
             column.transform.SetParent(_lighthouseBeacon.transform, true);
             Destroy(column.GetComponent<Collider>());
 
-            // A4 light beam: a thin emissive cylinder parented under the beacon. Because the beacon
-            // object is already toggled by RefreshWorldForQuest, the beam inherits the dark/restored
-            // state and needs no save flag, quest stage or persistence change.
+            // A tapered translucent beam reads as a sweep instead of a solid rod at the tideflats.
+            // It inherits the beacon's existing dark/restored state and needs no new save flag.
             var beamPivot = new GameObject("Lighthouse Beam Pivot");
             beamPivot.transform.SetParent(_lighthouseBeacon.transform, false);
             beamPivot.transform.localPosition = Vector3.zero;
             // The beacon cylinder is scaled; cancel that scale so the beam keeps its intended world length and radius.
             Vector3 beaconScale = _lighthouseBeacon.transform.lossyScale;
             beamPivot.transform.localScale = new Vector3(1f / beaconScale.x, 1f / beaconScale.y, 1f / beaconScale.z);
-            var beamMaterial = CreateMaterial(new Color(2f, .95f, .12f), true);
-            if (beamMaterial != null && beamMaterial.HasProperty("_EmissionColor"))
-                beamMaterial.SetColor("_EmissionColor", new Color(1f, .48f, .08f) * 4.2f);
-            var beam = Primitive(PrimitiveType.Cylinder, "Lighthouse Sweep Beam", position + Vector3.up * 8.2f,
-                new Vector3(LighthouseBeamRadius * 2f, LighthouseBeamLength * .5f, LighthouseBeamRadius * 2f),
-                beamMaterial);
-            beam.transform.SetParent(beamPivot.transform, false);
-            beam.transform.localPosition = new Vector3(0f, 0f, LighthouseBeamLength * .5f);
-            beam.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-            Destroy(beam.GetComponent<Collider>());
+            BuildBeamShell(beamPivot.transform, "Lighthouse Sweep Beam Halo", 3.4f, .16f);
+            BuildBeamShell(beamPivot.transform, "Lighthouse Sweep Beam Core", 1.25f, .42f);
             beamPivot.AddComponent<LighthouseBeam>().Configure(LighthouseBeam.DefaultSweepSeconds);
             _lighthouseLight = new GameObject("Lighthouse Light").AddComponent<Light>();
             _lighthouseLight.type = LightType.Point;
@@ -573,6 +564,46 @@ namespace FoglightIsles
             _lighthouseLight.intensity = 7f;
             _lighthouseLight.color = new Color(1f, .55f, .22f);
             _lighthouseLight.transform.position = position + Vector3.up * 8.5f;
+        }
+
+        private static void BuildBeamShell(Transform parent, string name, float farRadius, float opacity)
+        {
+            const int sides = 12;
+            var vertices = new Vector3[(sides + 1) * 2];
+            var triangles = new int[sides * 12];
+            for (int side = 0; side <= sides; side++)
+            {
+                float angle = side * Mathf.PI * 2f / sides;
+                Vector3 radial = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f);
+                vertices[side * 2] = radial * LighthouseBeamNearRadius;
+                vertices[side * 2 + 1] = radial * farRadius + Vector3.forward * LighthouseBeamLength;
+                if (side == sides) continue;
+                int a = side * 2;
+                int next = (side + 1) * 2;
+                int t = side * 12;
+                triangles[t] = a; triangles[t + 1] = next; triangles[t + 2] = a + 1;
+                triangles[t + 3] = next; triangles[t + 4] = next + 1; triangles[t + 5] = a + 1;
+                triangles[t + 6] = a + 1; triangles[t + 7] = next; triangles[t + 8] = a;
+                triangles[t + 9] = a + 1; triangles[t + 10] = next + 1; triangles[t + 11] = next;
+            }
+            var mesh = new Mesh { name = name };
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.RecalculateNormals();
+            var shell = new GameObject(name);
+            shell.transform.SetParent(parent, false);
+            shell.AddComponent<MeshFilter>().sharedMesh = mesh;
+            var material = CreateMaterial(new Color(1f, .55f, .16f, opacity), true);
+            material.SetFloat("_Mode", 2f);
+            material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            material.SetInt("_ZWrite", 0);
+            material.DisableKeyword("_ALPHATEST_ON");
+            material.EnableKeyword("_ALPHABLEND_ON");
+            material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+            material.SetColor("_EmissionColor", new Color(1f, .48f, .08f) * 2f);
+            shell.AddComponent<MeshRenderer>().sharedMaterial = material;
         }
 
         private void BuildHarbourRewards()
