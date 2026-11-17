@@ -2,6 +2,7 @@
 
 测试日期：
 构建编号（标题页或 BUILD_INFO.txt）：
+试玩包版本（BUILD_INFO.txt 首行）：
 Windows 版本：
 显卡与分辨率：
 输入设备（键鼠/手柄型号）：
@@ -50,6 +51,6 @@ Windows 版本：
 - 是否出现卡顿、撕裂或显示模式异常：
 - 希望继续探索什么内容：
 
-试玩时按 F12 的截图保存在 `%USERPROFILE%\AppData\LocalLow\Foglight Isles\Foglight Isles Demo\Screenshots`；精确路径可从 `playtest.log` 查找。退出游戏并填完此表后，双击 `COLLECT_FEEDBACK.cmd` 可在试玩目录生成反馈 ZIP；发送前请检查内容。
+试玩时按 F12 的截图保存在 `%USERPROFILE%\AppData\LocalLow\Foglight Isles\Foglight Isles Demo\Screenshots`；精确路径可从当前 `playtest.log` 和之前的 `playtest-*.log` 查找。退出游戏并填完此表后，双击 `COLLECT_FEEDBACK.cmd` 可在试玩目录生成反馈 ZIP；发送前请检查内容。
 
 如有崩溃或报错，请附上发生前的操作与 `Player.log`。日志通常位于 `%USERPROFILE%\AppData\LocalLow\Foglight Isles\Foglight Isles Demo\Player.log`。

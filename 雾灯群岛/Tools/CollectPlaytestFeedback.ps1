@@ -20,14 +20,22 @@ foreach ($name in $required) {
     $files.Add([pscustomobject]@{ Path = (Join-Path $rootPath $name); Entry = $name })
 }
 $logPath = Join-Path $rootPath 'playtest.log'
+$priorLogs = @(Get-ChildItem -LiteralPath $rootPath -File | Where-Object {
+    $_.Name -match '^playtest-\d{8}-\d{6}-\d{3}(?:-[a-f0-9]{6})?\.log$'
+} | Sort-Object Name)
+foreach ($priorLog in $priorLogs) {
+    $files.Add([pscustomobject]@{ Path = $priorLog.FullName; Entry = $priorLog.Name })
+}
+$logPaths = @($priorLogs.FullName) + @($logPath)
 
-# Include only screenshots explicitly logged by this playtest run. Do not sweep the
-# player's whole persistent-data directory or older screenshots from other runs.
+# Include only screenshots explicitly logged by these playtest runs. Do not sweep the
+# player's whole persistent-data directory or unrelated screenshots.
 $screenshotCount = 0
 if (Test-Path -LiteralPath $ScreenshotDirectory -PathType Container) {
     $screenshotRoot = (Resolve-Path -LiteralPath $ScreenshotDirectory).Path
     $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
-    foreach ($line in [System.IO.File]::ReadAllLines($logPath)) {
+    foreach ($runLog in $logPaths) {
+      foreach ($line in [System.IO.File]::ReadAllLines($runLog)) {
         if ($line -notmatch '\[FoglightIsles Screenshot\] PASS .+ saved to (.+\.png)\s*$') { continue }
         $candidate = $Matches[1].Trim()
         if (-not [System.IO.Path]::IsPathRooted($candidate)) { continue }
@@ -39,6 +47,7 @@ if (Test-Path -LiteralPath $ScreenshotDirectory -PathType Container) {
         if (-not $seen.Add($name)) { continue }
         $files.Add([pscustomobject]@{ Path = $candidatePath; Entry = "Screenshots/$name" })
         $screenshotCount++
+      }
     }
 }
 
@@ -67,8 +76,8 @@ try {
             'Foglight Isles playtest feedback bundle'
             'Review these files before sending. This helper does not upload them.'
             'Complete FEEDBACK_TEMPLATE.md before running this helper, or replace its blank copy in this ZIP before sending.'
-            "Playtest log present: $(Test-Path -LiteralPath $logPath -PathType Leaf)"
-            "Screenshots from this log: $screenshotCount"
+            "Playtest logs included: $($logPaths.Count)"
+            "Screenshots from these logs: $screenshotCount"
             "Player.log included by request: $IncludePlayerLog"
         ) -join [Environment]::NewLine
         $entry = $archive.CreateEntry('CONTENTS.txt')

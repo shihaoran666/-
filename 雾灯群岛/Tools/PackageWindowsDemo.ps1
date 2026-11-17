@@ -1,5 +1,5 @@
 ﻿param(
-    [string]$Version = '0.2.13'
+    [string]$Version = '0.2.14'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -18,7 +18,7 @@ $required = @(
     'UnityCrashHandler64.exe'
 )
 $optional = @('D3D12')
-$testerFiles = @('PLAYTEST.txt', 'FEEDBACK_TEMPLATE.md', 'PLAYTEST_START.cmd', 'COLLECT_FEEDBACK.cmd', 'Tools/CollectPlaytestFeedback.ps1')
+$testerFiles = @('PLAYTEST.txt', 'FEEDBACK_TEMPLATE.md', 'PLAYTEST_START.cmd', 'COLLECT_FEEDBACK.cmd', 'Tools/CollectPlaytestFeedback.ps1', 'Tools/RotatePlaytestLog.ps1')
 foreach ($name in $required) {
     if (-not (Test-Path -LiteralPath (Join-Path $releaseRoot $name))) {
         throw "Missing release file: $name"
@@ -75,7 +75,7 @@ finally { $stream.Dispose() }
 $readBack = [System.IO.Compression.ZipFile]::OpenRead($archivePath)
 try {
     $entries = @($readBack.Entries | ForEach-Object { $_.FullName })
-    if ('FoglightIslesDemo.exe' -notin $entries -or 'UnityPlayer.dll' -notin $entries -or 'PLAYTEST.txt' -notin $entries -or 'FEEDBACK_TEMPLATE.md' -notin $entries -or 'PLAYTEST_START.cmd' -notin $entries -or 'COLLECT_FEEDBACK.cmd' -notin $entries -or 'Tools/CollectPlaytestFeedback.ps1' -notin $entries -or 'BUILD_INFO.txt' -notin $entries) {
+    if ('FoglightIslesDemo.exe' -notin $entries -or 'UnityPlayer.dll' -notin $entries -or 'PLAYTEST.txt' -notin $entries -or 'FEEDBACK_TEMPLATE.md' -notin $entries -or 'PLAYTEST_START.cmd' -notin $entries -or 'COLLECT_FEEDBACK.cmd' -notin $entries -or 'Tools/CollectPlaytestFeedback.ps1' -notin $entries -or 'Tools/RotatePlaytestLog.ps1' -notin $entries -or 'BUILD_INFO.txt' -notin $entries) {
         throw 'Package verification failed: required executable files are absent.'
     }
     if ($entries | Where-Object { $_ -match 'DoNotShip|review-.*\.png' }) {
