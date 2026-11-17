@@ -6,6 +6,12 @@ namespace FoglightIsles
     /// <summary>Creates the first-week harbour greybox so no hand-authored assets are required yet.</summary>
     public sealed class GameBootstrap : MonoBehaviour
     {
+        // Art plan A4: the restored lighthouse needs a body of light readable from the tideflats
+        // (~94 m away). A point light fades under the fog long before that distance, so the beam
+        // carries the state change instead of the light.
+        private const float LighthouseBeamLength = 58f;
+        private const float LighthouseBeamRadius = .42f;
+
         private Material _wood;
         private Material _stone;
         private Material _water;
@@ -506,6 +512,24 @@ namespace FoglightIsles
                 new Vector3(1.6f, 6f, 1.6f), CreateMaterial(new Color(1f, .08f, 0f), true));
             column.transform.SetParent(_lighthouseBeacon.transform, true);
             Destroy(column.GetComponent<Collider>());
+
+            // A4 light beam: a thin emissive cylinder parented under the beacon. Because the beacon
+            // object is already toggled by RefreshWorldForQuest, the beam inherits the dark/restored
+            // state and needs no save flag, quest stage or persistence change.
+            var beamPivot = new GameObject("Lighthouse Beam Pivot");
+            beamPivot.transform.SetParent(_lighthouseBeacon.transform, false);
+            beamPivot.transform.localPosition = Vector3.zero;
+            var beamMaterial = CreateMaterial(new Color(1f, .66f, .3f), true);
+            if (beamMaterial != null && beamMaterial.HasProperty("_EmissionColor"))
+                beamMaterial.SetColor("_EmissionColor", new Color(1f, .66f, .3f) * 4.2f);
+            var beam = Primitive(PrimitiveType.Cylinder, "Lighthouse Sweep Beam", position + Vector3.up * 8.2f,
+                new Vector3(LighthouseBeamRadius * 2f, LighthouseBeamLength * .5f, LighthouseBeamRadius * 2f),
+                beamMaterial);
+            beam.transform.SetParent(beamPivot.transform, false);
+            beam.transform.localPosition = new Vector3(0f, 0f, LighthouseBeamLength * .5f);
+            beam.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            Destroy(beam.GetComponent<Collider>());
+            beamPivot.AddComponent<LighthouseBeam>().Configure(LighthouseBeam.DefaultSweepSeconds);
             _lighthouseLight = new GameObject("Lighthouse Light").AddComponent<Light>();
             _lighthouseLight.type = LightType.Point;
             _lighthouseLight.range = 120f;
