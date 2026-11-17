@@ -1,4 +1,4 @@
-雾灯群岛 / Foglight Isles — Windows 试玩说明（内部测试版 0.2.8）
+雾灯群岛 / Foglight Isles — Windows 试玩说明（内部测试版 0.2.9）
 
 1. 解压整个 ZIP，双击 PLAYTEST_START.cmd 以独立试玩进度启动；首次使用此入口从新档开始，之后会继续保存该入口的进度。直接运行 FoglightIslesDemo.exe 则使用常规进度。请保留同目录中的 Data、MonoBleedingEdge 等文件夹。
 2. 标题界面按 Enter、手柄 A，或点击“开始探索”（有任务或探索进度时显示“继续探索”）。若要重新测试首轮流程，按 N、手柄 Y 或点击“新档试玩”，再确认清除旧进度；音量和画面设置会保留。
