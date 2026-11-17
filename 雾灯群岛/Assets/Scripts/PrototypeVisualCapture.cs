@@ -114,6 +114,7 @@ namespace FoglightIsles
             bool captureRouteArchive = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-route-archive-review") >= 0;
             bool captureHarbourDock = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-harbour-dock-review") >= 0;
             bool captureTideflatsDock = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-tideflats-dock-review") >= 0;
+            bool captureBeaconState = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-beacon-state-review") >= 0;
             if (captureRouteArchive)
             {
                 var discoveries = FindFirstObjectByType<DiscoveryJournal>();
@@ -206,6 +207,19 @@ namespace FoglightIsles
                     camera.transform.SetPositionAndRotation(eye, Quaternion.LookRotation(target - eye));
                 }
             }
+            if (captureBeaconState)
+            {
+                FindFirstObjectByType<QuestState>()?.Accept();
+                var player = FindFirstObjectByType<PlayerController>();
+                if (player != null) player.enabled = false;
+                var camera = Camera.main;
+                if (camera != null)
+                {
+                    Vector3 eye = new Vector3(-13f, 2f, -67f);
+                    Vector3 target = new Vector3(-13f, 1.3f, -79f);
+                    camera.transform.SetPositionAndRotation(eye, Quaternion.LookRotation(target - eye));
+                }
+            }
             if (captureChart || captureLens)
             {
                 var player = FindFirstObjectByType<PlayerController>();
@@ -261,7 +275,8 @@ namespace FoglightIsles
             string path = Path.Combine(Application.dataPath,
                 captureTitle ? "../review-title.png" : capturePauseMenu ? "../review-pause.png" : captureDialogue ? "../review-dialogue.png" : captureMap ? "../review-map.png" :
                 captureBoat ? "../review-boat.png" : captureShipwright ? "../review-shipwright.png" :
-                captureHarbourDock ? "../review-harbour-dock.png" : captureTideflatsDock ? "../review-tideflats-dock.png" : captureChart ? "../review-chart.png" :
+                captureHarbourDock ? "../review-harbour-dock.png" : captureTideflatsDock ? "../review-tideflats-dock.png" :
+                captureBeaconState ? "../review-beacon-unlit.png" : captureChart ? "../review-chart.png" :
                 captureLens ? "../review-lens.png" : captureClue ? "../review-clue.png" :
                 captureJournal ? "../review-journal.png" : captureBehind ? "../review-behind.png" :
                 captureDiscoveries ? "../review-discoveries.png" :
@@ -270,6 +285,15 @@ namespace FoglightIsles
                 captureLighthouseUnlit ? "../review-lighthouse-unlit.png" : captureLighthouse ? "../review-lighthouse-lit.png" : "../review-harbour.png");
             ScreenCapture.CaptureScreenshot(path);
             Debug.Log($"[FoglightIsles Capture] Saved review frame to {path}");
+            if (captureBeaconState)
+            {
+                yield return new WaitForSecondsRealtime(.5f);
+                FindFirstObjectByType<TideBeaconPuzzle>()?.Activate(0);
+                yield return new WaitForEndOfFrame();
+                string litPath = Path.Combine(Application.dataPath, "../review-beacon-lit.png");
+                ScreenCapture.CaptureScreenshot(litPath);
+                Debug.Log($"[FoglightIsles Capture] Saved review frame to {litPath}");
+            }
             if (captureLighthouse && Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-lighthouse-sweep-review") >= 0)
             {
                 for (int step = 1; step <= 3; step++)
