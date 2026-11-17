@@ -301,7 +301,11 @@ namespace FoglightIsles
 
         private void BuildDiscoveries()
         {
+            Primitive(PrimitiveType.Cube, "港务旧木箱", new Vector3(-10.2f, .5f, 10.8f),
+                new Vector3(.9f, 1.15f, .7f), _wood);
             BuildDiscovery(DiscoveryJournal.Catalog[0], new Vector3(-10.2f, 1.15f, 10.8f));
+            Primitive(PrimitiveType.Cube, "旧罗盘木座", new Vector3(6.5f, .05f, 9.5f),
+                new Vector3(.9f, .3f, .9f), _wood);
             BuildDiscovery(DiscoveryJournal.Catalog[1], new Vector3(6.5f, .28f, 9.5f));
             var tidePool = Primitive(PrimitiveType.Cylinder, "贝壳浅水洼", new Vector3(-15.2f, -.04f, -83.4f),
                 new Vector3(2.4f, .035f, 1.8f), CreateMaterial(new Color(.13f, .48f, .53f)));
@@ -756,7 +760,7 @@ namespace FoglightIsles
                     ? "你把四件旧物都找齐了。罗盘与护符上的刻痕相合，这片海还有未讲完的故事。"
                     : _discoveries.IsDiscovered("watchers-charm")
                     ? "信号桅杆工作得很漂亮。晨鹱号已经准备好继续探索。"
-                    : "信号桅杆亮了。浅滩东南侧旧路边，据说有人遗失过守望者护符。",
+                    : "信号桅杆亮了。浅滩东南侧旧石台旁，据说有人遗失过守望者护符。",
                 _ => ProgressStore.HarbourProsperity >= 2
                     ? "码头这几晚热闹多了。船一多，我就得连夜补帆——这才像话。"
                     : _discoveries.IsDiscovered("old-compass")

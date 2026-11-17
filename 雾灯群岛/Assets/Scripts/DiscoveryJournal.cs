@@ -11,13 +11,15 @@ namespace FoglightIsles
             public readonly string Id;
             public readonly string Title;
             public readonly string Region;
+            public readonly string Hint;
             public readonly string Note;
 
-            public Entry(string id, string title, string region, string note)
+            public Entry(string id, string title, string region, string hint, string note)
             {
                 Id = id;
                 Title = title;
                 Region = region;
+                Hint = hint;
                 Note = note;
             }
         }
@@ -25,10 +27,10 @@ namespace FoglightIsles
         private const string Prefix = "foglightisles.discovery.";
         private static readonly Entry[] Entries =
         {
-            new("harbour-log", "潮湿的港口日志", "晨湾港", "最后一页记录着雾中灯塔的交接日期，字迹已被海水晕开。"),
-            new("old-compass", "褪色的旧罗盘", "晨湾港", "指针总偏向潮汐浅滩，和旧航图上的航线相合。"),
-            new("tide-shell", "会回响的潮汐贝壳", "潮汐浅滩", "贴近耳边时，壳内会传出三次潮鸣。"),
-            new("watchers-charm", "守望者护符", "潮汐浅滩", "护符背面刻着一艘从晨湾港驶出的旧船。")
+            new("harbour-log", "潮湿的港口日志", "晨湾港", "港务办公室旁，风吹动一叠潮湿旧纸。", "最后一页记录着雾中灯塔的交接日期，字迹已被海水晕开。"),
+            new("old-compass", "褪色的旧罗盘", "晨湾港", "修船屋门前，偶有一闪铜色反光。", "指针总偏向潮汐浅滩，和旧航图上的航线相合。"),
+            new("tide-shell", "会回响的潮汐贝壳", "潮汐浅滩", "浅滩西侧退潮的水洼，传出细小回声。", "贴近耳边时，壳内会传出三次潮鸣。"),
+            new("watchers-charm", "守望者护符", "潮汐浅滩", "浅滩东南的旧石台上，映着一点蓝光。", "护符背面刻着一艘从晨湾港驶出的旧船。")
         };
         private readonly HashSet<string> _discovered = new HashSet<string>();
 

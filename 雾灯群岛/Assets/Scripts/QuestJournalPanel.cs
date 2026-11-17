@@ -131,7 +131,7 @@ namespace FoglightIsles
                 GUI.Label(new Rect(left + 28f, row, 650f, 30f),
                     found ? entry.Title + "  ·  " + entry.Region : "未发现的线索  ·  " + entry.Region, _heading);
                 GUI.Label(new Rect(left + 34f, row + 36f, 650f, 48f),
-                    found ? entry.Note : "在这一带自由探索，留意与环境不同的发光物件。", _body);
+                    found ? entry.Note : entry.Hint, _body);
             }
         }
 

@@ -90,6 +90,7 @@ Windows 开发构建可使用以下命令检查靠岸与返航路径，不会写
 ## 可选探索发现检查
 
 - 在晨湾港与潮汐浅滩各找两件发现物，留意贝壳旁的浅水洼、护符下的旧石台能否帮助辨认位置。集齐 4/4 后检查 HUD 提示和探索笔记，返港分别与艾琳、乔恩交谈，确认他们对四件旧物有回应；记录是否能凭环境和 NPC 传闻自然找到物品。
+- 未拾取前可在 J / 手柄 Y 的探索笔记页查看四条可选环境方位线索。先观察玩家是否自行发现并使用此页，再记录哪条线索过于含糊或直接说出了答案；玩家仍须依靠地标寻找，不应出现精确导航箭头。
 
 ```powershell
 & .\Builds\Windows\FoglightIslesDemo.exe -batchmode -nographics -verify-discoveries -logFile .\discoveries-validation.log
