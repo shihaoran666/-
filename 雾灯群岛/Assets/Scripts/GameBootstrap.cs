@@ -815,7 +815,8 @@ namespace FoglightIsles
         private string EileenLine()
         {
             int prosperity = ProgressStore.HarbourProsperity;
-            if (prosperity > 0 && _stormSignalQuest.Stage != StormSignalStage.Complete)
+            if (prosperity > 0 && _surveyQuest.Stage == SurveyChartStage.Complete &&
+                _stormSignalQuest.Stage != StormSignalStage.Complete)
             {
                 if (prosperity >= 2)
                     return "码头又亮起一盏灯，晚归的渔船认得回港的路了。晨湾港正在醒来。";
@@ -829,8 +830,8 @@ namespace FoglightIsles
                 _ => _surveyQuest.Stage switch
                 {
                     SurveyChartStage.Locked => _discoveries.IsDiscovered("harbour-log")
-                        ? "灯塔亮起来后，旧航图上的航线也许终于能重新辨认。"
-                        : "灯塔亮起来后，旧航图也许能辨认。港务办公室门前还有一页潮湿日志。",
+                        ? "你找到的港口日志提到潮汐浅滩遗迹。去石台找回旧航图。"
+                        : "去潮汐浅滩遗迹的石台找回旧航图。港务办公室门前的潮湿日志也许有线索。",
                     SurveyChartStage.SearchRuin => "遗迹里的航图被潮水浸透了，但它仍标着一条通往未知海域的线。",
                     SurveyChartStage.ReturnToHarbour => "让我看看那张航图。它会告诉我们迷雾外还有什么。",
                     _ => _discoveries.Count == _discoveries.Total

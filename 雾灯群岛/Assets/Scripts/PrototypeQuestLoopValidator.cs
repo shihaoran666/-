@@ -198,9 +198,10 @@ namespace FoglightIsles
 
             bootstrap.TalkToEileen();
             yield return null;
-            if (chart.Stage != SurveyChartStage.SearchRuin || guidance.Target != boat.transform)
+            if (chart.Stage != SurveyChartStage.SearchRuin || guidance.Target != boat.transform ||
+                !DialoguePanel.CurrentLine.Contains("航图") || !DialoguePanel.CurrentLine.Contains("潮汐浅滩"))
             {
-                Fail("chart quest did not point the player to the boat");
+                Fail("chart quest did not introduce the chart in dialogue and point to the boat");
                 yield break;
             }
             if (!TryCollectFromApproach(player, "遗迹残碑", new Vector3(6.6f, .05f, -83.6f)) ||
@@ -222,9 +223,10 @@ namespace FoglightIsles
             }
             MovePlayerTo(player, new Vector3(-7.4f, .05f, 7f));
             bootstrap.TalkToEileen();
-            if (GameObject.Find("Harbour Chart Display") == null || GameObject.Find("Harbour Signal Lamp") != null)
+            if (GameObject.Find("Harbour Chart Display") == null || GameObject.Find("Harbour Signal Lamp") != null ||
+                !DialoguePanel.CurrentLine.Contains("航图"))
             {
-                Fail("the chart hand-in did not change the harbour navigation table correctly");
+                Fail("the chart hand-in dialogue or harbour navigation table was incorrect");
                 yield break;
             }
             bootstrap.TalkToJon();
