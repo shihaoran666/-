@@ -112,6 +112,8 @@ namespace FoglightIsles
             bool captureLighthouse = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-lighthouse-review") >= 0;
             bool captureLighthouseUnlit = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-lighthouse-unlit-review") >= 0;
             bool captureRouteArchive = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-route-archive-review") >= 0;
+            bool captureHarbourDock = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-harbour-dock-review") >= 0;
+            bool captureTideflatsDock = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-tideflats-dock-review") >= 0;
             if (captureRouteArchive)
             {
                 var discoveries = FindFirstObjectByType<DiscoveryJournal>();
@@ -192,6 +194,18 @@ namespace FoglightIsles
                     player.transform.rotation = Quaternion.identity;
                 }
             }
+            if (captureHarbourDock || captureTideflatsDock)
+            {
+                var player = FindFirstObjectByType<PlayerController>();
+                if (player != null) player.enabled = false;
+                var camera = Camera.main;
+                if (camera != null)
+                {
+                    Vector3 eye = captureHarbourDock ? new Vector3(0f, 2f, -18f) : new Vector3(0f, 2f, -46f);
+                    Vector3 target = captureHarbourDock ? new Vector3(0f, .6f, -3.2f) : new Vector3(0f, .6f, -63f);
+                    camera.transform.SetPositionAndRotation(eye, Quaternion.LookRotation(target - eye));
+                }
+            }
             if (captureChart || captureLens)
             {
                 var player = FindFirstObjectByType<PlayerController>();
@@ -246,7 +260,8 @@ namespace FoglightIsles
             yield return new WaitForEndOfFrame();
             string path = Path.Combine(Application.dataPath,
                 captureTitle ? "../review-title.png" : capturePauseMenu ? "../review-pause.png" : captureDialogue ? "../review-dialogue.png" : captureMap ? "../review-map.png" :
-                captureBoat ? "../review-boat.png" : captureShipwright ? "../review-shipwright.png" : captureChart ? "../review-chart.png" :
+                captureBoat ? "../review-boat.png" : captureShipwright ? "../review-shipwright.png" :
+                captureHarbourDock ? "../review-harbour-dock.png" : captureTideflatsDock ? "../review-tideflats-dock.png" : captureChart ? "../review-chart.png" :
                 captureLens ? "../review-lens.png" : captureClue ? "../review-clue.png" :
                 captureJournal ? "../review-journal.png" : captureBehind ? "../review-behind.png" :
                 captureDiscoveries ? "../review-discoveries.png" :
