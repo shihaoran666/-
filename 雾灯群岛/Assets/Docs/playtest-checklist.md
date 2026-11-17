@@ -198,7 +198,7 @@ Windows 开发构建可使用以下命令检查靠岸与返航路径，不会写
 先运行上方 `-verify-keyboard-first-quest` 生成首任务完成且勘测帆已安装的独立验证存档，再运行：
 
 ```powershell
-& .\Builds\ReleaseCandidate\FoglightIslesDemo.exe -screen-fullscreen 0 -screen-width 800 -screen-height 600 -verify-keyboard-chart-quest -capture-keyboard-chart -logFile .\keyboard-chart-quest.log
+& .\Builds\ReleaseCandidate\FoglightIslesDemo.exe -screen-fullscreen 0 -screen-width 800 -screen-height 600 -verify-keyboard-chart-quest -capture-keyboard-chart -capture-small-review -logFile .\keyboard-chart-quest.log
 ```
 
 日志出现 `[FoglightIsles Keyboard Chart] PASS`，表示通过实际键盘绑定接取航图、驾驶升级船往返浅滩、从遗迹地面拾取航图并交给艾琳。独立进程检查任务与港口展示恢复：

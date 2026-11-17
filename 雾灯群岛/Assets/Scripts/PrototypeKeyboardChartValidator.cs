@@ -55,6 +55,12 @@ namespace FoglightIsles
                 yield break;
             }
             bool capture = Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-keyboard-chart") >= 0;
+            if (capture && Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-small-review") >= 0)
+            {
+                Screen.SetResolution(640, 360, FullScreenMode.Windowed);
+                yield return new WaitUntil(() => Screen.width == 640 && Screen.height == 360);
+                Debug.Log($"[FoglightIsles Keyboard Chart Capture] Review resolution {Screen.width}x{Screen.height}");
+            }
             Keyboard keyboard = InputSystem.AddDevice<Keyboard>();
             InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.Enter));
             yield return null;
