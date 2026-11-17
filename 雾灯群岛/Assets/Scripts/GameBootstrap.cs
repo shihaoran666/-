@@ -15,6 +15,7 @@ namespace FoglightIsles
         private SurveyChartQuest _surveyQuest;
         private StormSignalQuest _stormSignalQuest;
         private DiscoveryJournal _discoveries;
+        private InteractionCueAudio _cueAudio;
         private BoatController _boat;
         private GameObject _prism;
         private GameObject _surveyChart;
@@ -63,6 +64,8 @@ namespace FoglightIsles
             _stormSignalQuest = gameObject.AddComponent<StormSignalQuest>();
             _stormSignalQuest.Configure(_surveyQuest);
             _discoveries = gameObject.AddComponent<DiscoveryJournal>();
+            _cueAudio = gameObject.AddComponent<InteractionCueAudio>();
+            _tidePuzzle.Activated += success => _cueAudio.Play(success ? InteractionCue.BeaconSuccess : InteractionCue.BeaconFailure);
             BuildMaterials();
             BuildLighting();
             BuildSoundscape();
@@ -343,7 +346,10 @@ namespace FoglightIsles
             var interaction = item.AddComponent<Interactable>();
             interaction.Title = entry.Title;
             interaction.Prompt = "记录发现";
-            interaction.OnInteracted = _ => pickup.Collect();
+            interaction.OnInteracted = _ =>
+            {
+                if (pickup.Collect()) _cueAudio.Play(InteractionCue.Discovery);
+            };
         }
 
         private static void AddDiscoveryAccent(GameObject item, PrimitiveType shape, string name,
@@ -691,7 +697,10 @@ namespace FoglightIsles
                 TryUnlockSurveySail();
                 return;
             }
+            bool handingInLens = _stormSignalQuest.Stage == StormSignalStage.ReturnToShipwright;
             _stormSignalQuest.TalkToJon();
+            if (handingInLens && _stormSignalQuest.Stage == StormSignalStage.Complete)
+                _cueAudio.Play(InteractionCue.QuestHandIn);
         }
 
         internal void TalkToEileen()
@@ -702,8 +711,13 @@ namespace FoglightIsles
                     "你找齐的四件旧物拼出了航线。我把它们整理到导航台旁的旧航线陈列；去看看吧。");
             else
                 DialoguePanel.Show("艾琳，港口管理员", EileenLine());
-            if (_quest.Stage == PrismQuestStage.ReturnToHarbour) _quest.HandIn();
+            bool handingInPrism = _quest.Stage == PrismQuestStage.ReturnToHarbour;
+            bool handingInChart = _surveyQuest.Stage == SurveyChartStage.ReturnToHarbour;
+            if (handingInPrism) _quest.HandIn();
             else _surveyQuest.TalkToEileen();
+            if ((handingInPrism && _quest.Stage == PrismQuestStage.Complete) ||
+                (handingInChart && _surveyQuest.Stage == SurveyChartStage.Complete))
+                _cueAudio.Play(InteractionCue.QuestHandIn);
         }
 
         private bool TryUnlockHarbourRouteArchive()

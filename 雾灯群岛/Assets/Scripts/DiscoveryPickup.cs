@@ -17,9 +17,11 @@ namespace FoglightIsles
             if (_journal.IsDiscovered(_id)) gameObject.SetActive(false);
         }
 
-        public void Collect()
+        public bool Collect()
         {
-            if (_journal != null && _journal.Discover(_id, _title)) gameObject.SetActive(false);
+            if (_journal == null || !_journal.Discover(_id, _title)) return false;
+            gameObject.SetActive(false);
+            return true;
         }
     }
 }
