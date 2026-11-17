@@ -30,6 +30,7 @@ namespace FoglightIsles
                                 ProgressStore.LoadSurveyChartStage() != SurveyChartStage.Locked ||
                                 ProgressStore.LoadStormSignalStage() != StormSignalStage.Locked ||
                                 ProgressStore.HasSurveySail || ProgressStore.LoadTideBeaconProgress() > 0 ||
+                                ProgressStore.HasSafeDock ||
                                 FindFirstObjectByType<DiscoveryJournal>()?.Count > 0;
             Time.timeScale = 0f;
             Cursor.lockState = CursorLockMode.None;
@@ -155,8 +156,10 @@ namespace FoglightIsles
             Cursor.visible = false;
             QuestState prism = FindFirstObjectByType<QuestState>();
             StormSignalQuest storm = FindFirstObjectByType<StormSignalQuest>();
-            string welcome = prism == null || prism.Stage == PrismQuestStage.NotAccepted
-                ? "欢迎来到晨湾港。查看告示牌，开始你的第一次探索。"
+            string welcome = ProgressStore.ResumeAtTideflats
+                ? "欢迎回到潮汐浅滩。晨鹱号停在码头外侧；按 J 查看探索笔记。"
+                : prism == null || prism.Stage == PrismQuestStage.NotAccepted
+                    ? "欢迎来到晨湾港。查看告示牌，开始你的第一次探索。"
                 : storm != null && storm.Stage == StormSignalStage.Complete
                     ? "欢迎回来。试玩版主线已完成，可继续自由探索群岛；按 J 查看探索笔记。"
                     : "欢迎回来。按 J 查看任务日志，按 M 打开海图，继续当前探索。";

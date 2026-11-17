@@ -120,6 +120,7 @@ namespace FoglightIsles
             _speed = 0f;
             _captain = null;
             player.LeaveBoat(_nearbyDock.DisembarkPosition);
+            ProgressStore.SaveSafeDock(_nearbyDock.transform.position.z < -45f);
         }
 
         private DockingPoint FindNearestDock()

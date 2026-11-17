@@ -11,6 +11,7 @@ Steam 单人自由探索冒险的 Unity 6 原型工程。首个垂直切片只�
 - 可驾驶的“晨鹱号”、晨湾港与潮汐浅滩的靠岸点，以及上下船流程。
 - 首条可完成任务：接取灯塔委托、在潮汐浅滩拾取棱镜零件、返港交付给管理员艾琳。
 - 使用本地存档保存任务阶段和“勘测帆”升级；交付棱镜后会点亮晨湾港灯塔，并可向船匠乔恩领取升级。
+- 成功靠岸下船时记录码头；重开后角色和小船一起从上次靠岸码头继续。航行途中退出会回到上次靠岸码头；旧存档默认回晨湾港，新档会清除码头记录。
 - 任务指引会随阶段更新 HUD 目标、罗盘菱形和海图标记；目标在身后时罗盘会给出左右后方提示。
 - 潮汐浅滩含有一个三步环境谜题：按西→中→东点亮潮汐信标，才会开启棱镜祭台；已点亮信标会跨重启保存。
 - 试玩版已具备三条顺序任务：灯塔棱镜、失落航图、风暴透镜；每条都由港口 NPC 接取、前往潮汐浅滩探索并返港交付。艾琳和乔恩在可见距离内有姓名与身份牌，打开对白或菜单时自动隐藏。
@@ -54,6 +55,6 @@ Steam 单人自由探索冒险的 Unity 6 原型工程。首个垂直切片只�
 - `Foglight Isles > Build Windows Demo (Development)`：输出到 `Builds/Windows/FoglightIslesDemo.exe`，用于自动验证与本地调试。
 - `Foglight Isles > Build Windows Demo (Release Candidate)`：输出到 `Builds/ReleaseCandidate/FoglightIslesDemo.exe`，关闭 Unity Development 标记，作为 Steam 上传前的候选包。
 
-需要发送 Windows 试玩包时，在项目根目录运行 `./Tools/PackageWindowsDemo.ps1`。脚本将运行必需文件及试玩说明、反馈模板、试玩和反馈收集入口打包到 `Builds/Distribution/FoglightIslesDemo-Windows-0.2.12.zip`，自动排除验收截图与 Unity 的 `DoNotShip` 调试目录。ZIP 内的 `BUILD_INFO.txt` 记录构建编号，解压后标题页也会显示同一编号，请在试玩反馈中填写。解压 ZIP 后双击 `PLAYTEST_START.cmd` 可使用独立试玩进度并生成 `playtest.log`；试玩时按 F12 的截图保存在本机 `AppData/LocalLow/Foglight Isles/Foglight Isles Demo/Screenshots`。海图或日志打开时按手柄 Menu 可转入暂停，按 B 从暂停返回游戏。退出游戏并填写 `FEEDBACK_TEMPLATE.md` 后，双击 `COLLECT_FEEDBACK.cmd` 可将构建信息、反馈表、试玩日志和本轮记录的 F12 截图打成同目录 ZIP；此操作不会上传数据，发送前请检查内容。直接运行 `FoglightIslesDemo.exe` 则使用常规进度。发布到 Steam 前仍需完成实体输入、显示模式和目标设备验收。
+需要发送 Windows 试玩包时，在项目根目录运行 `./Tools/PackageWindowsDemo.ps1`。脚本将运行必需文件及试玩说明、反馈模板、试玩和反馈收集入口打包到 `Builds/Distribution/FoglightIslesDemo-Windows-0.2.13.zip`，自动排除验收截图与 Unity 的 `DoNotShip` 调试目录。ZIP 内的 `BUILD_INFO.txt` 记录构建编号，解压后标题页也会显示同一编号，请在试玩反馈中填写。解压 ZIP 后双击 `PLAYTEST_START.cmd` 可使用独立试玩进度并生成 `playtest.log`；试玩时按 F12 的截图保存在本机 `AppData/LocalLow/Foglight Isles/Foglight Isles Demo/Screenshots`。海图或日志打开时按手柄 Menu 可转入暂停，按 B 从暂停返回游戏。退出游戏并填写 `FEEDBACK_TEMPLATE.md` 后，双击 `COLLECT_FEEDBACK.cmd` 可将构建信息、反馈表、试玩日志和本轮记录的 F12 截图打成同目录 ZIP；此操作不会上传数据，发送前请检查内容。直接运行 `FoglightIslesDemo.exe` 则使用常规进度。发布到 Steam 前仍需完成实体输入、显示模式和目标设备验收。
 
 构建目录已被 Git 忽略。

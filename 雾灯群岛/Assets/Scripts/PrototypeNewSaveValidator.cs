@@ -53,6 +53,7 @@ namespace FoglightIsles
             ProgressStore.SaveSurveyClueRead();
             ProgressStore.SaveStormSignalStage(StormSignalStage.ReturnToShipwright);
             ProgressStore.SaveStormVaneDirection(0);
+            ProgressStore.SaveSafeDock(true);
             PlayerPrefs.SetInt(ProgressStore.StorageKey("foglightisles.discovery.harbour-log"), 1);
             PlayerPrefs.SetFloat(ProgressStore.StorageKey(VolumeKey), .42f);
             PlayerPrefs.SetFloat(ProgressStore.StorageKey(LookSensitivityKey), 1.5f);
@@ -75,6 +76,7 @@ namespace FoglightIsles
             QuestState quest = FindFirstObjectByType<QuestState>();
             DiscoveryJournal journal = FindFirstObjectByType<DiscoveryJournal>();
             BoatController boat = FindFirstObjectByType<BoatController>();
+            PlayerController player = FindFirstObjectByType<PlayerController>();
             bool valid = quest != null && quest.Stage == PrismQuestStage.NotAccepted &&
                          ProgressStore.LoadQuestStage() == PrismQuestStage.NotAccepted &&
                          !ProgressStore.HasSurveySail && ProgressStore.LoadTideBeaconProgress() == 0 &&
@@ -82,8 +84,11 @@ namespace FoglightIsles
                          !ProgressStore.HasReadSurveyClue &&
                          ProgressStore.LoadStormSignalStage() == StormSignalStage.Locked &&
                          ProgressStore.LoadStormVaneDirection() == 1 &&
+                         !ProgressStore.HasSafeDock &&
                          journal != null && journal.Count == 0 &&
                          boat != null && Mathf.Approximately(boat.MaxForwardSpeed, 11f) &&
+                         player != null && Vector3.Distance(player.transform.position, new Vector3(0f, 1f, 10f)) < .1f &&
+                         Vector3.Distance(boat.transform.position, new Vector3(0f, .38f, -5.4f)) < .1f &&
                          !DialoguePanel.IsOpen && StartScreen.IsOpen &&
                          Mathf.Approximately(AudioListener.volume, .42f) &&
                          Mathf.Approximately(PlayerController.LookSensitivityMultiplier, 1.5f) &&
@@ -199,6 +204,7 @@ namespace FoglightIsles
             ProgressStore.SaveSurveyChartStage(SurveyChartStage.SearchRuin);
             ProgressStore.SaveStormSignalStage(StormSignalStage.ReturnToShipwright);
             ProgressStore.SaveStormVaneDirection(0);
+            ProgressStore.SaveSafeDock(true);
             string discoveryKey = ProgressStore.StorageKey("foglightisles.discovery.harbour-log");
             PlayerPrefs.SetInt(discoveryKey, 1);
             PlayerPrefs.SetFloat(ProgressStore.StorageKey(VolumeKey), .42f);
@@ -235,14 +241,18 @@ namespace FoglightIsles
             QuestState quest = FindFirstObjectByType<QuestState>();
             DiscoveryJournal journal = FindFirstObjectByType<DiscoveryJournal>();
             BoatController boat = FindFirstObjectByType<BoatController>();
+            PlayerController player = FindFirstObjectByType<PlayerController>();
             bool valid = quest != null && quest.Stage == PrismQuestStage.NotAccepted &&
                          ProgressStore.LoadQuestStage() == PrismQuestStage.NotAccepted &&
                          !ProgressStore.HasSurveySail && ProgressStore.LoadTideBeaconProgress() == 0 &&
                          ProgressStore.LoadSurveyChartStage() == SurveyChartStage.Locked &&
                          ProgressStore.LoadStormSignalStage() == StormSignalStage.Locked &&
                          ProgressStore.LoadStormVaneDirection() == 1 &&
+                         !ProgressStore.HasSafeDock &&
                          journal != null && journal.Count == 0 &&
                          boat != null && Mathf.Approximately(boat.MaxForwardSpeed, 11f) &&
+                         player != null && Vector3.Distance(player.transform.position, new Vector3(0f, 1f, 10f)) < .1f &&
+                         Vector3.Distance(boat.transform.position, new Vector3(0f, .38f, -5.4f)) < .1f &&
                          StartScreen.IsOpen && !FindFirstObjectByType<StartScreen>().IsConfirmingNewSave &&
                          !FindFirstObjectByType<StartScreen>().HasSavedProgress &&
                          Mathf.Approximately(AudioListener.volume, .42f) &&

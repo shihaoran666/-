@@ -52,7 +52,8 @@ namespace FoglightIsles
         private void Awake()
         {
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-quest-loop") >= 0 ||
-                Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-beacon-partial-prepare") >= 0)
+                Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-beacon-partial-prepare") >= 0 ||
+                Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-safe-dock-prepare") >= 0)
                 ProgressStore.ClearPrototypeProgress();
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-discoveries") >= 0)
                 DiscoveryJournal.ClearProgress();
@@ -100,6 +101,7 @@ namespace FoglightIsles
             gameObject.AddComponent<QuestJournalPanel>();
             gameObject.AddComponent<PrototypeRuntimeValidator>();
             gameObject.AddComponent<PrototypeJourneyValidator>();
+            gameObject.AddComponent<PrototypeSafeDockValidator>();
             gameObject.AddComponent<PrototypeGamepadLookValidator>();
             gameObject.AddComponent<PrototypeGamepadVoyageValidator>();
             gameObject.AddComponent<PrototypeKeyboardJourneyValidator>();
@@ -457,6 +459,11 @@ namespace FoglightIsles
             var boat = new GameObject("Skiff - Dawn Petrel");
             boat.transform.position = new Vector3(0f, .38f, -5.4f);
             boat.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            if (ProgressStore.ResumeAtTideflats)
+            {
+                boat.transform.position = new Vector3(3.2f, .38f, -62.1f);
+                boat.transform.rotation = Quaternion.identity;
+            }
             _boat = boat.AddComponent<BoatController>();
             _morningBayDock.BindBoat(_boat);
             _tideflatsDock.BindBoat(_boat);
@@ -965,6 +972,8 @@ namespace FoglightIsles
             var player = new GameObject("Explorer");
             player.transform.position = new Vector3(0f, 1f, 10f);
             player.transform.rotation = Quaternion.Euler(0f, -110f, 0f);
+            if (ProgressStore.ResumeAtTideflats)
+                player.transform.position = _tideflatsDock.DisembarkPosition;
             var controller = player.AddComponent<CharacterController>();
             controller.height = 1.8f;
             controller.radius = .35f;

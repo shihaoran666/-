@@ -16,9 +16,15 @@ namespace FoglightIsles
         internal const string SurveyClueReadKey = "foglightisles.quest.survey-chart.clue.v1";
         private const string HarbourProsperityKey = "foglightisles.harbour.prosperity.v1";
         private const string HarbourRouteArchiveKey = "foglightisles.harbour.route-archive.v1";
+        private const string SafeDockKey = "foglightisles.player.safe-dock.v1";
         private static readonly bool IsInteractiveReview = Array.IndexOf(Environment.GetCommandLineArgs(), "-interactive-review") >= 0;
         private static readonly bool IsPerformanceRun = Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-performance") >= 0;
+        private static readonly bool IsSafeDockValidation = Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-safe-dock-prepare") >= 0 ||
+                                                            Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-safe-dock-resume") >= 0;
         private static readonly bool IsValidationRun = Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-quest-loop") >= 0 ||
+                                                       Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-journey") >= 0 ||
+                                                       Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-safe-dock-prepare") >= 0 ||
+                                                       Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-safe-dock-resume") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-quest-resume") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-beacon-partial-prepare") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-beacon-partial-resume") >= 0 ||
@@ -48,11 +54,21 @@ namespace FoglightIsles
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-display-resume") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-playtest-screenshot") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-capture-review") >= 0;
-        private static readonly string StorageSuffix = IsValidationRun ? ".validation" : IsPerformanceRun ? ".performance" :
+        private static readonly string StorageSuffix = IsSafeDockValidation ? ".validation.safe-dock" : IsValidationRun ? ".validation" : IsPerformanceRun ? ".performance" :
                                                        IsInteractiveReview ? ".playtest.v2" : string.Empty;
 
         internal static string ActiveScope => StorageSuffix.Length == 0 ? "regular" : StorageSuffix;
         internal static string StorageKey(string key) => StorageSuffix.Length == 0 ? key : key + StorageSuffix;
+
+        // A dock is a safe checkpoint: arbitrary sea coordinates could restore the boat inside shore geometry.
+        public static bool HasSafeDock => PlayerPrefs.HasKey(StorageKey(SafeDockKey));
+        public static bool ResumeAtTideflats => PlayerPrefs.GetInt(StorageKey(SafeDockKey), 0) == 1;
+
+        public static void SaveSafeDock(bool atTideflats)
+        {
+            PlayerPrefs.SetInt(StorageKey(SafeDockKey), atTideflats ? 1 : 0);
+            PlayerPrefs.Save();
+        }
 
         public static PrismQuestStage LoadQuestStage()
         {
@@ -177,6 +193,7 @@ namespace FoglightIsles
             PlayerPrefs.DeleteKey(StorageKey(SurveyClueReadKey));
             PlayerPrefs.DeleteKey(StorageKey(HarbourProsperityKey));
             PlayerPrefs.DeleteKey(StorageKey(HarbourRouteArchiveKey));
+            PlayerPrefs.DeleteKey(StorageKey(SafeDockKey));
             PlayerPrefs.Save();
         }
     }
