@@ -378,7 +378,13 @@ namespace FoglightIsles
             glow.intensity = 2.6f;
             glow.color = new Color(1f, .44f, .08f);
             glow.enabled = false;
-            _tidePuzzle.RegisterBeacon(index, beacon.transform);
+            var raisedCap = Primitive(PrimitiveType.Cylinder, name + "点亮柱",
+                position + Vector3.up * 1.4f, new Vector3(.18f, .5f, .18f), _warmLight);
+            raisedCap.transform.SetParent(beacon.transform, true);
+            var capCollider = raisedCap.GetComponent<Collider>();
+            capCollider.enabled = false;
+            Destroy(capCollider);
+            _tidePuzzle.RegisterBeacon(index, beacon.transform, raisedCap);
             var interaction = beacon.AddComponent<Interactable>();
             interaction.Title = name;
             interaction.Prompt = "点亮潮汐信标";

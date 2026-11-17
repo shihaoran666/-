@@ -8,6 +8,7 @@ namespace FoglightIsles
     {
         private const int BeaconCount = 3;
         private readonly Transform[] _beacons = new Transform[BeaconCount];
+        private readonly GameObject[] _raisedCaps = new GameObject[BeaconCount];
         private QuestState _quest;
         private int _progress;
 
@@ -23,9 +24,10 @@ namespace FoglightIsles
             _progress = ProgressStore.LoadTideBeaconProgress();
         }
 
-        public void RegisterBeacon(int index, Transform beacon)
+        public void RegisterBeacon(int index, Transform beacon, GameObject raisedCap)
         {
             _beacons[index] = beacon;
+            _raisedCaps[index] = raisedCap;
             RefreshBeaconVisual(index);
         }
 
@@ -71,6 +73,7 @@ namespace FoglightIsles
         {
             if (_beacons[index] == null) return;
             bool lit = index < _progress;
+            if (_raisedCaps[index] != null) _raisedCaps[index].SetActive(lit);
             var renderer = _beacons[index].GetComponent<Renderer>();
             if (renderer != null)
             {
