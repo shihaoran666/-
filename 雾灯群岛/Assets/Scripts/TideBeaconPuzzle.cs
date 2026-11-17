@@ -12,6 +12,7 @@ namespace FoglightIsles
         private int _progress;
 
         public event Action Changed;
+        public event Action<bool> Activated;
         public bool IsComplete => _progress >= BeaconCount;
         public Transform CurrentTarget => IsComplete ? null : _beacons[_progress];
         public string CurrentLabel => IsComplete ? "棱镜祭台已开启" : $"潮汐信标 {_progress + 1}/{BeaconCount}";
@@ -46,6 +47,7 @@ namespace FoglightIsles
                 ProgressStore.SaveTideBeaconProgress(_progress);
                 RefreshAllVisuals();
                 Changed?.Invoke();
+                Activated?.Invoke(false);
                 PrototypeHUD.SetMessage("潮音消散，已点亮的信标全部熄灭。石碑箭纹从西向东——西、中、东，从西侧重新来。 ");
                 return;
             }
@@ -54,6 +56,7 @@ namespace FoglightIsles
             ProgressStore.SaveTideBeaconProgress(_progress);
             RefreshAllVisuals();
             Changed?.Invoke();
+            Activated?.Invoke(true);
             PrototypeHUD.SetMessage(IsComplete
                 ? "三座潮汐信标回应了彼此。棱镜祭台已开启。"
                 : $"信标已点亮：{_progress}/{BeaconCount}。沿着箭纹继续寻找下一座。");

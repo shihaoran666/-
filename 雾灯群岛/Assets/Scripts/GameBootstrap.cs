@@ -6,6 +6,12 @@ namespace FoglightIsles
     /// <summary>Creates the first-week harbour greybox so no hand-authored assets are required yet.</summary>
     public sealed class GameBootstrap : MonoBehaviour
     {
+        // Art plan A4: the restored lighthouse needs a body of light readable from the tideflats
+        // (~94 m away). A point light fades under the fog long before that distance, so the beam
+        // carries the state change instead of the light.
+        private const float LighthouseBeamLength = 58f;
+        private const float LighthouseBeamRadius = .9f;
+
         private Material _wood;
         private Material _stone;
         private Material _water;
@@ -15,6 +21,7 @@ namespace FoglightIsles
         private SurveyChartQuest _surveyQuest;
         private StormSignalQuest _stormSignalQuest;
         private DiscoveryJournal _discoveries;
+        private InteractionCueAudio _cueAudio;
         private BoatController _boat;
         private GameObject _prism;
         private GameObject _surveyChart;
@@ -63,6 +70,8 @@ namespace FoglightIsles
             _stormSignalQuest = gameObject.AddComponent<StormSignalQuest>();
             _stormSignalQuest.Configure(_surveyQuest);
             _discoveries = gameObject.AddComponent<DiscoveryJournal>();
+            _cueAudio = gameObject.AddComponent<InteractionCueAudio>();
+            _tidePuzzle.Activated += success => _cueAudio.Play(success ? InteractionCue.BeaconSuccess : InteractionCue.BeaconFailure);
             BuildMaterials();
             BuildLighting();
             BuildSoundscape();
@@ -343,7 +352,10 @@ namespace FoglightIsles
             var interaction = item.AddComponent<Interactable>();
             interaction.Title = entry.Title;
             interaction.Prompt = "记录发现";
-            interaction.OnInteracted = _ => pickup.Collect();
+            interaction.OnInteracted = _ =>
+            {
+                if (pickup.Collect()) _cueAudio.Play(InteractionCue.Discovery);
+            };
         }
 
         private static void AddDiscoveryAccent(GameObject item, PrimitiveType shape, string name,
@@ -506,6 +518,27 @@ namespace FoglightIsles
                 new Vector3(1.6f, 6f, 1.6f), CreateMaterial(new Color(1f, .08f, 0f), true));
             column.transform.SetParent(_lighthouseBeacon.transform, true);
             Destroy(column.GetComponent<Collider>());
+
+            // A4 light beam: a thin emissive cylinder parented under the beacon. Because the beacon
+            // object is already toggled by RefreshWorldForQuest, the beam inherits the dark/restored
+            // state and needs no save flag, quest stage or persistence change.
+            var beamPivot = new GameObject("Lighthouse Beam Pivot");
+            beamPivot.transform.SetParent(_lighthouseBeacon.transform, false);
+            beamPivot.transform.localPosition = Vector3.zero;
+            // The beacon cylinder is scaled; cancel that scale so the beam keeps its intended world length and radius.
+            Vector3 beaconScale = _lighthouseBeacon.transform.lossyScale;
+            beamPivot.transform.localScale = new Vector3(1f / beaconScale.x, 1f / beaconScale.y, 1f / beaconScale.z);
+            var beamMaterial = CreateMaterial(new Color(2f, .95f, .12f), true);
+            if (beamMaterial != null && beamMaterial.HasProperty("_EmissionColor"))
+                beamMaterial.SetColor("_EmissionColor", new Color(1f, .48f, .08f) * 4.2f);
+            var beam = Primitive(PrimitiveType.Cylinder, "Lighthouse Sweep Beam", position + Vector3.up * 8.2f,
+                new Vector3(LighthouseBeamRadius * 2f, LighthouseBeamLength * .5f, LighthouseBeamRadius * 2f),
+                beamMaterial);
+            beam.transform.SetParent(beamPivot.transform, false);
+            beam.transform.localPosition = new Vector3(0f, 0f, LighthouseBeamLength * .5f);
+            beam.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
+            Destroy(beam.GetComponent<Collider>());
+            beamPivot.AddComponent<LighthouseBeam>().Configure(LighthouseBeam.DefaultSweepSeconds);
             _lighthouseLight = new GameObject("Lighthouse Light").AddComponent<Light>();
             _lighthouseLight.type = LightType.Point;
             _lighthouseLight.range = 120f;
@@ -691,7 +724,10 @@ namespace FoglightIsles
                 TryUnlockSurveySail();
                 return;
             }
+            bool handingInLens = _stormSignalQuest.Stage == StormSignalStage.ReturnToShipwright;
             _stormSignalQuest.TalkToJon();
+            if (handingInLens && _stormSignalQuest.Stage == StormSignalStage.Complete)
+                _cueAudio.Play(InteractionCue.QuestHandIn);
         }
 
         internal void TalkToEileen()
@@ -702,8 +738,13 @@ namespace FoglightIsles
                     "你找齐的四件旧物拼出了航线。我把它们整理到导航台旁的旧航线陈列；去看看吧。");
             else
                 DialoguePanel.Show("艾琳，港口管理员", EileenLine());
-            if (_quest.Stage == PrismQuestStage.ReturnToHarbour) _quest.HandIn();
+            bool handingInPrism = _quest.Stage == PrismQuestStage.ReturnToHarbour;
+            bool handingInChart = _surveyQuest.Stage == SurveyChartStage.ReturnToHarbour;
+            if (handingInPrism) _quest.HandIn();
             else _surveyQuest.TalkToEileen();
+            if ((handingInPrism && _quest.Stage == PrismQuestStage.Complete) ||
+                (handingInChart && _surveyQuest.Stage == SurveyChartStage.Complete))
+                _cueAudio.Play(InteractionCue.QuestHandIn);
         }
 
         private bool TryUnlockHarbourRouteArchive()
