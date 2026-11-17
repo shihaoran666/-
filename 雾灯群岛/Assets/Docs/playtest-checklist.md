@@ -73,10 +73,19 @@ Windows 开发构建可使用以下命令检查靠岸与返航路径，不会写
 以下命令会从新档开始，验证信标错误顺序重置、正确解谜、棱镜/航图/风暴透镜三条任务、两名 NPC 交付及存档状态：
 
 ```powershell
-& .\Builds\Windows\FoglightIslesDemo.exe -batchmode -nographics -verify-quest-loop -logFile .\quest-loop-validation.log
+& .\Builds\ReleaseCandidate\FoglightIslesDemo.exe -batchmode -nographics -verify-quest-loop -logFile .\quest-loop-validation.log
 ```
 
 日志出现 `[FoglightIsles Quest Loop] PASS` 表示任务状态机、三个任务物品在地面接近位置可被玩家交互选中、NPC 交付、勘测帆升级及通关后目标标记清除的回归通过。随后可另起进程执行 `-verify-quest-resume`，确认存档中的三条任务和船只升级在重启后恢复。验证模式只使用独立的原型存档，正常启动试玩版不会清档；完整步行路线仍需人工试玩确认。
+
+信标部分进度要用两个**独立进程**依次验证，第一步清空验证专用进度并保存前两座，第二步检查读档后两根竖柱及东侧目标，再故意点错使其全灭并重新解谜：
+
+```powershell
+& .\Builds\ReleaseCandidate\FoglightIslesDemo.exe -batchmode -nographics -verify-beacon-partial-prepare -logFile .\beacon-partial-prepare.log
+& .\Builds\ReleaseCandidate\FoglightIslesDemo.exe -batchmode -nographics -verify-beacon-partial-resume -logFile .\beacon-partial-resume.log
+```
+
+依次出现 `[FoglightIsles Beacon Partial Prepare] PASS` 和 `[FoglightIsles Beacon Partial Resume] PASS` 才算通过。此检查复用独立验证存档，不能与其他验证命令交错运行；运行完成后该验证存档的信标为 3/3，不影响玩家试玩进度。
 
 ## 可选探索发现检查
 

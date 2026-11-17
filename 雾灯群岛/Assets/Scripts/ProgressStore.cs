@@ -20,6 +20,8 @@ namespace FoglightIsles
         private static readonly bool IsPerformanceRun = Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-performance") >= 0;
         private static readonly bool IsValidationRun = Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-quest-loop") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-quest-resume") >= 0 ||
+                                                       Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-beacon-partial-prepare") >= 0 ||
+                                                       Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-beacon-partial-resume") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-discoveries") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-discoveries-resume") >= 0 ||
                                                        Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-new-save") >= 0 ||

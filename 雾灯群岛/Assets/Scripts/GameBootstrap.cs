@@ -51,7 +51,8 @@ namespace FoglightIsles
 
         private void Awake()
         {
-            if (Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-quest-loop") >= 0)
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-quest-loop") >= 0 ||
+                Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-beacon-partial-prepare") >= 0)
                 ProgressStore.ClearPrototypeProgress();
             if (Array.IndexOf(Environment.GetCommandLineArgs(), "-verify-discoveries") >= 0)
                 DiscoveryJournal.ClearProgress();

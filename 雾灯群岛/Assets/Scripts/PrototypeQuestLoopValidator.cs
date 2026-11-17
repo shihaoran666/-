@@ -9,6 +9,8 @@ namespace FoglightIsles
     {
         private const string VerifyArgument = "-verify-quest-loop";
         private const string ResumeArgument = "-verify-quest-resume";
+        private const string BeaconPrepareArgument = "-verify-beacon-partial-prepare";
+        private const string BeaconResumeArgument = "-verify-beacon-partial-resume";
 
         private void Start()
         {
@@ -16,6 +18,72 @@ namespace FoglightIsles
                 StartCoroutine(VerifyQuestLoop());
             else if (Array.IndexOf(Environment.GetCommandLineArgs(), ResumeArgument) >= 0)
                 StartCoroutine(VerifyRestoredUpgrade());
+            else if (Array.IndexOf(Environment.GetCommandLineArgs(), BeaconPrepareArgument) >= 0)
+                StartCoroutine(PreparePartialBeaconSave());
+            else if (Array.IndexOf(Environment.GetCommandLineArgs(), BeaconResumeArgument) >= 0)
+                StartCoroutine(VerifyPartialBeaconSave());
+        }
+
+        private static IEnumerator PreparePartialBeaconSave()
+        {
+            yield return null;
+            QuestState quest = FindFirstObjectByType<QuestState>();
+            TideBeaconPuzzle puzzle = FindFirstObjectByType<TideBeaconPuzzle>();
+            if (quest == null || puzzle == null || quest.Stage != PrismQuestStage.NotAccepted ||
+                ProgressStore.LoadTideBeaconProgress() != 0 || !LitBeaconCapsMatch(0))
+            {
+                FailBeaconPartial("fresh validation state was not empty");
+                yield break;
+            }
+
+            quest.Accept();
+            puzzle.Activate(0);
+            if (ProgressStore.LoadTideBeaconProgress() != 1 || !LitBeaconCapsMatch(1))
+            {
+                FailBeaconPartial("the first lit beacon was not saved or visible");
+                yield break;
+            }
+            puzzle.Activate(1);
+            if (ProgressStore.LoadTideBeaconProgress() != 2 || !LitBeaconCapsMatch(2))
+            {
+                FailBeaconPartial("the second lit beacon was not saved or visible");
+                yield break;
+            }
+
+            Debug.Log("[FoglightIsles Beacon Partial Prepare] PASS — two lit beacons and the active quest saved for a new process.");
+            Application.Quit(0);
+        }
+
+        private static IEnumerator VerifyPartialBeaconSave()
+        {
+            yield return null;
+            QuestState quest = FindFirstObjectByType<QuestState>();
+            TideBeaconPuzzle puzzle = FindFirstObjectByType<TideBeaconPuzzle>();
+            if (quest == null || puzzle == null || quest.Stage != PrismQuestStage.SearchTideflats ||
+                ProgressStore.LoadTideBeaconProgress() != 2 || puzzle.IsComplete ||
+                puzzle.CurrentTarget?.name != "东侧潮汐信标" || !LitBeaconCapsMatch(2))
+            {
+                FailBeaconPartial("partial beacon progress, target or visual caps did not restore");
+                yield break;
+            }
+
+            puzzle.Activate(0); // Wrong after a reload: saved state and both caps must reset.
+            if (ProgressStore.LoadTideBeaconProgress() != 0 || !LitBeaconCapsMatch(0))
+            {
+                FailBeaconPartial("wrong order did not reset restored beacon progress");
+                yield break;
+            }
+            puzzle.Activate(0);
+            puzzle.Activate(1);
+            puzzle.Activate(2);
+            if (!puzzle.IsComplete || ProgressStore.LoadTideBeaconProgress() != 3 || !LitBeaconCapsMatch(3))
+            {
+                FailBeaconPartial("beacon puzzle could not be completed after the restored state reset");
+                yield break;
+            }
+
+            Debug.Log("[FoglightIsles Beacon Partial Resume] PASS — two lit caps and the next target restored, wrong order reset, then the puzzle completed.");
+            Application.Quit(0);
         }
 
         private static IEnumerator VerifyRestoredUpgrade()
@@ -226,6 +294,12 @@ namespace FoglightIsles
         private static void Fail(string reason)
         {
             Debug.LogError($"[FoglightIsles Quest Loop] FAIL — {reason}.");
+            Application.Quit(1);
+        }
+
+        private static void FailBeaconPartial(string reason)
+        {
+            Debug.LogError($"[FoglightIsles Beacon Partial] FAIL — {reason}.");
             Application.Quit(1);
         }
     }
