@@ -43,7 +43,7 @@ namespace FoglightIsles.Editor
             EnsureRuntimeMaterialAsset();
             PlayerSettings.productName = "Foglight Isles Demo";
             PlayerSettings.companyName = "Foglight Isles";
-            PlayerSettings.bundleVersion = "0.2.9";
+            PlayerSettings.bundleVersion = "0.2.10";
             BuildReport report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
                 scenes = new[] { ScenePath },
